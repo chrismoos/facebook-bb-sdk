@@ -67,6 +67,7 @@ public class StrawBerry extends UiApplication implements ActionListener
 	private static PersistentObject store;
 	private static ApplicationSettings settings;
 	
+	
 	static {
 		store = PersistentStore.getPersistentObject(0x200eab09899L);
 		
