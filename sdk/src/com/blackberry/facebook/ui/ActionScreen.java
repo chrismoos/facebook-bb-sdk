@@ -27,37 +27,32 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package facebook;
+package com.blackberry.facebook.ui;
 
-/**
- * FacebookException
- * 
- * Encapsulates a generic Facebook exception.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public class FacebookException extends Exception {
+import java.util.Enumeration;
+import java.util.Vector;
 
-	private static final long serialVersionUID = -4319640782215676756L;
+import net.rim.device.api.ui.container.MainScreen;
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public FacebookException() {
-		super();
+public class ActionScreen extends MainScreen {
+
+	protected Vector actionListeners = new Vector();
+
+	public void addActionListener(ActionListener actionListener) {
+		if (actionListener != null) {
+			actionListeners.addElement(actionListener);
+		}
 	}
 
-	/**
-	 * Create a generic Facebook exception given message.
-	 * 
-	 * @param message
-	 *            the exception message.
-	 */
-	public FacebookException(String message) {
-		super(message);
+	protected void fireAction(String action) {
+		fireAction(action, null);
+	}
+
+	protected void fireAction(String action, Object data) {
+		Enumeration listenersEnum = actionListeners.elements();
+		while (listenersEnum.hasMoreElements()) {
+			((ActionListener) listenersEnum.nextElement()).onAction(new Action(this, action, data));
+		}
 	}
 
 }

@@ -27,65 +27,16 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package graph;
+package com.blackberry.facebook.util.network;
 
-/**
- * Parameter
- * 
- * Represents a parameter.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public class Parameter {
+public class HttpConnectionFactoryException extends Exception {
 
-	/**
-	 * parameter's name.
-	 */
-	private String name;
-
-	/**
-	 * parameter's value.
-	 */
-	private String value;
-
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public Parameter() {
+	public HttpConnectionFactoryException(String string) {
+		super(string);
 	}
 
-	/**
-	 * Create a parameter given a name and value.
-	 * 
-	 * @param name
-	 *            the name.
-	 * @param value
-	 *            the value.
-	 */
-	public Parameter(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
-
-	/**
-	 * Obtain the parameter's name.
-	 * 
-	 * @return the name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Obtain the parameter's value.
-	 * 
-	 * @return the value.
-	 */
-	public String getValue() {
-		return value;
+	public HttpConnectionFactoryException() {
+		super();
 	}
 
 }

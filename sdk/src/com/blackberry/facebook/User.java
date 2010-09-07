@@ -27,17 +27,8 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package facebook;
+package com.blackberry.facebook;
 
-/**
- * User
- * 
- * Represents a Facebook user.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
 public interface User {
 
 	/**

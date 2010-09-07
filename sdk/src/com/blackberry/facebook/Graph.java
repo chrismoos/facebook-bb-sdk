@@ -27,23 +27,9 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package graph;
+package com.blackberry.facebook;
 
-/**
- * GraphContext
- * 
- * A context for Graph API.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public interface GraphContext {
-
-	/**
-	 * Context factory property name.
-	 */
-	public static final String CONTEXT_FACTORY = "graph.context.factory";
+public interface Graph {
 
 	/**
 	 * Context provider URL.

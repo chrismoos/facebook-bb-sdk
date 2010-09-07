@@ -27,17 +27,8 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package facebook;
+package com.blackberry.facebook;
 
-/**
- * Post
- * 
- * Represents a Facebook post.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
 public interface Post {
 
 	/**

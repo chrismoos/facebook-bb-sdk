@@ -27,20 +27,11 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package graph;
+package com.blackberry.facebook;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-/**
- * Parameters
- * 
- * Represents a collection of parameters.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
 public class Parameters {
 
 	/**

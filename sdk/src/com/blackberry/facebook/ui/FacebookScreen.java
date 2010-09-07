@@ -27,37 +27,17 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package graph;
+package com.blackberry.facebook.ui;
 
-/**
- * GraphException
- * 
- * Encapsulates a generic Graph exception.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public class GraphException extends Exception {
+import com.blackberry.facebook.FacebookContext;
 
-	private static final long serialVersionUID = 5489096138931502460L;
+public abstract class FacebookScreen extends ActionScreen {
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public GraphException() {
+	protected FacebookContext fbc;
+
+	public FacebookScreen(FacebookContext pfbc) {
 		super();
-	}
-
-	/**
-	 * Create a generic Graph exception given message.
-	 * 
-	 * @param message
-	 *            the exception message.
-	 */
-	public GraphException(String message) {
-		super(message);
+		fbc = pfbc;
 	}
 
 }
