@@ -27,37 +27,61 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.samples;
+package samples.StrawBerry;
 
-import net.rim.device.api.ui.component.Dialog;
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.ui.FacebookScreen;
+
+import net.rim.device.api.ui.Field;
+import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.component.ButtonField;
+import net.rim.device.api.ui.component.EditField;
 import net.rim.device.api.ui.component.LabelField;
-import blackberry.ui.AbstractScreen;
+import net.rim.device.api.ui.component.Menu;
 
-/**
- * SendMessageScreen
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-final class SendMessageScreen extends AbstractScreen {
+final class UpdateStatusScreen extends FacebookScreen {
 
 	// List of actions:
-	static final String ACTION_ENTER = "sendMessage";
-	static final String ACTION_SUCCESS = "messageSent";
+	static final String ACTION_ENTER = "updateStatus";
+	static final String ACTION_SUCCESS = "statusUpdated";
 	static final String ACTION_ERROR = "error";
 
 	// List of labels:
-	private static final String LABEL_TITLE = "Send Message";
+	private static final String LABEL_TITLE = "Update Status";
+	private static final String LABEL_UPDATE = "Update My Status";
+
+	private EditField editField;
+	private ButtonField buttonField;
 
 	/**
 	 * Default constructor.
 	 * 
 	 */
-	SendMessageScreen() {
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	UpdateStatusScreen(FacebookContext pfbc) {
+		super(pfbc);
+		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
+
+		editField = new EditField(LabelField.USE_ALL_WIDTH);
+		add(editField);
+
+		buttonField = new ButtonField(LABEL_UPDATE);
+		buttonField.setChangeListener(new FieldChangeListener() {
+
+			public void fieldChanged(Field field, int context) {
+				try {
+					fbc.getLoggedInUser().setStatus(editField.getText());
+					fireAction(ACTION_SUCCESS);
+				} catch (Exception e) {
+					fireAction(ACTION_ERROR, e.getMessage());
+				}
+			}
+
+		});
+		add(buttonField);
+	}
+
+	protected void makeMenu(Menu menu, int instance) {
+		menu.deleteAll();
 	}
 
 }

@@ -27,10 +27,12 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.samples;
+package samples.StrawBerry;
 
-import facebook.FacebookContext;
-import facebook.User;
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.User;
+import com.blackberry.facebook.ui.FacebookScreen;
+
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.component.ButtonField;
@@ -38,16 +40,8 @@ import net.rim.device.api.ui.component.EditField;
 import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ObjectChoiceField;
 import net.rim.device.api.ui.component.SeparatorField;
-import blackberry.ui.AbstractScreen;
 
-/**
- * PostWallScreen
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-final class PostWallScreen extends AbstractScreen {
+final class PostWallScreen extends FacebookScreen {
 
 	// List of actions:
 	static final String ACTION_ENTER = "postWall";
@@ -75,7 +69,8 @@ final class PostWallScreen extends AbstractScreen {
 	 * Default constructor.
 	 * 
 	 */
-	PostWallScreen() {
+	PostWallScreen(FacebookContext pfbc) {
+		super(pfbc);
 		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
 
 		objectChoiceField = new ObjectChoiceField();
@@ -106,9 +101,9 @@ final class PostWallScreen extends AbstractScreen {
 
 				try {
 					users[objectChoiceField.getSelectedIndex()].publishStream(descriptionEditField.getText(), hrefEditField.getText(), titleEditField.getText(), descriptionEditField.getText(), captionEditField.getText());
-					fireActioned(ACTION_SUCCESS);
+					fireAction(ACTION_SUCCESS);
 				} catch (Exception e) {
-					fireActioned(ACTION_ERROR, e.getMessage());
+					fireAction(ACTION_ERROR, e.getMessage());
 				}
 			}
 
@@ -122,7 +117,7 @@ final class PostWallScreen extends AbstractScreen {
 	 */
 	void loadList() {
 		try {
-			User[] friends = FacebookContext.getInstance().getLoggedInUser().getFriends();
+			User[] friends = fbc.getLoggedInUser().getFriends();
 
 			if (friends == null) {
 				users = new User[1];
@@ -130,7 +125,7 @@ final class PostWallScreen extends AbstractScreen {
 				users = new User[friends.length + 1];
 			}
 
-			users[0] = FacebookContext.getInstance().getLoggedInUser();
+			users[0] = fbc.getLoggedInUser();
 
 			for (int i = 1; i < (friends.length + 1); i++) {
 				users[i] = friends[i - 1];
@@ -138,7 +133,7 @@ final class PostWallScreen extends AbstractScreen {
 
 			objectChoiceField.setChoices(users);
 		} catch (Exception e) {
-			fireActioned(ACTION_ERROR, e.getMessage());
+			fireAction(ACTION_ERROR, e.getMessage());
 		}
 	}
 

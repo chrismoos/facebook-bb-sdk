@@ -27,70 +27,43 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.samples;
+package samples.StrawBerry;
+
+import com.blackberry.facebook.ApplicationSettings;
+import com.blackberry.facebook.ExtendedPermission;
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.FacebookException;
+import com.blackberry.facebook.ui.Action;
+import com.blackberry.facebook.ui.ActionListener;
+import com.blackberry.facebook.ui.LoginScreen;
+import com.blackberry.facebook.ui.PermissionScreen;
+import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.facebook.util.network.CookieManager;
+import com.blackberry.facebook.util.network.HttpConnectionFactory;
 
 import net.rim.device.api.system.PersistentObject;
 import net.rim.device.api.system.PersistentStore;
 import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.Dialog;
-import blackberry.action.ActionEvent;
-import blackberry.action.ActionListener;
-import blackberry.facebook.ApplicationSettings;
-import blackberry.facebook.ExtendedPermission;
-import blackberry.facebook.FacebookContextImpl;
-import blackberry.facebook.ui.LoginScreen;
-import blackberry.facebook.ui.PermissionScreen;
-import blackberry.net.CookieManager;
-import blackberry.net.HttpConnectionFactory;
-import blackberry.util.Logger;
-import blackberry.util.LoggerFactory;
-import facebook.FacebookContext;
-import facebook.FacebookException;
 
-/**
- * StrawBerry
- * 
- * Demonstrate the Facebook BlackBerry SDK.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public class StrawBerry extends UiApplication implements ActionListener {
+public class StrawBerry extends UiApplication implements ActionListener, Loggable {
 
-	// Application settings:
-	private static final String REST_URL = "http://api.facebook.com/restserver.php"; // As per Facebook.
-	private static final String GRAPH_URL = "https://graph.facebook.com"; // As per Facebook.
-	private static final String NEXT_URL = "http://www.facebook.com/connect/login_success.html"; // Your successful URL.
-	private static final String APPLICATION_KEY = "f21032d377681e02051e639830b4b678"; // Your Facebook Application Key. 
-	private static final String APPLICATION_SECRET = "590906fcfea8e348589cf43f06192c2e"; // Your Facebook Application Secret.
-	private static final long APPLICATION_ID = 317175255300L; // Your Facebook Application ID.
+	// Constants
+	private final String REST_URL = "http://api.facebook.com/restserver.php"; // As per Facebook.
+	private final String GRAPH_URL = "https://graph.facebook.com"; // As per Facebook.
+	private final String NEXT_URL = "http://www.facebook.com/connect/login_success.html"; // Your successful URL.
+	private final String APPLICATION_KEY = "f21032d377681e02051e639830b4b678"; // Your Facebook Application Key. 
+	private final String APPLICATION_SECRET = "590906fcfea8e348589cf43f06192c2e"; // Your Facebook Application Secret.
+	private final String APPLICATION_ID = "317175255300"; // Your Facebook Application ID.
+	private final long persistentObjectId = 0xed5edecbc209760eL; // samples.StrawBerry.StrawBerry
 
-	private static PersistentObject store;
-	private static ApplicationSettings settings;
-
-	static {
-		store = PersistentStore.getPersistentObject(0x200eab09899L);
-
-		synchronized (store) {
-			if (store.getContents() == null) {
-				store.setContents(new ApplicationSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID));
-				store.commit();
-			}
-		}
-
-		settings = (ApplicationSettings) store.getContents();
-	}
-
-	// Logger
-	private static final Logger log = LoggerFactory.getLogger(StrawBerry.class.getName());
-
-	// HttpConnectionFactory
-	private static final HttpConnectionFactory connFactory = new HttpConnectionFactory();
+	private PersistentObject store;
+	private HttpConnectionFactory connFactory;
 
 	private CookieManager cookieManager = new CookieManager();
 	private LoginScreen loginScreen;
 	private PermissionScreen permissionScreen;
+
 	private HomeScreen homeScreen;
 	private UpdateStatusScreen updateStatusScreen;
 	private RecentUpdatesScreen recentUpdatesScreen;
@@ -100,70 +73,87 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	private PostWallScreen postWallScreen;
 	private SendMessageScreen sendMessageScreen;
 
-	/**
-	 * Main
-	 * 
-	 * @param args
-	 *            the application arguments
-	 */
+	private FacebookContext fbc;
+
 	public static void main(String[] args) {
 		StrawBerry app = new StrawBerry();
 		app.enterEventDispatcher();
 	}
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
 	public StrawBerry() {
-		log.debug("====== START =======");
 
-		try {
-			new FacebookContextImpl(settings);
-		} catch (FacebookException e) {
-			log.error(e.getMessage());
-			System.exit(0);
-		}
+		init();
 
-		if (!FacebookContext.getInstance().hasSession()) {
-			loginScreen = new LoginScreen(settings, cookieManager);
-			loginScreen.addActionListener(this);
+		if ((fbc != null) && fbc.hasSession()) {
 
-			permissionScreen = new PermissionScreen(settings, cookieManager);
-			permissionScreen.addActionListener(this);
-
-			loginScreen.login();
-			pushScreen(loginScreen);
-		} else {
-			homeScreen = new HomeScreen();
+			homeScreen = new HomeScreen(fbc);
 			homeScreen.addActionListener(this);
 			pushScreen(homeScreen);
 
 			getApplication().invokeLater(new Runnable() {
-
 				public void run() {
 					try {
-						Dialog.inform("Hello " + FacebookContext.getInstance().getLoggedInUser().getFirstName() + "!");
+						Dialog.inform("Hello " + fbc.getLoggedInUser().getFirstName() + "!");
 					} catch (FacebookException e) {
+						e.printStackTrace();
 						Dialog.alert(e.getMessage());
 					}
 				}
-
 			});
+
+		} else {
+
+			loginScreen = new LoginScreen(fbc, cookieManager);
+			loginScreen.addActionListener(this);
+			loginScreen.login();
+			pushScreen(loginScreen);
 		}
 	}
 
-	public static HttpConnectionFactory getHttpConnectionFactory() {
-		return connFactory;
+	private void init() {
+
+		connFactory = new HttpConnectionFactory();
+		store = PersistentStore.getPersistentObject(persistentObjectId);
+		synchronized (store) {
+			if (store.getContents() == null) {
+				store.setContents(new ApplicationSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID));
+				store.commit();
+			}
+		}
+
+		try {
+			fbc = new FacebookContext((ApplicationSettings) store.getContents(), connFactory);
+
+		} catch (Throwable t) {
+			t.printStackTrace();
+			log.error(t.getMessage());
+			exit();
+		}
 	}
 
-	/**
-	 * Handles action events.
-	 * 
-	 * @param event
-	 *            the action event to handle.
-	 */
-	public void actioned(ActionEvent event) {
+	private void saveSettings(ApplicationSettings settings) {
+		synchronized (store) {
+			store.setContents(settings);
+			store.commit();
+		}
+	}
+
+	public void logoutAndExit() {
+		saveSettings(null);
+		exit();
+	}
+
+	public void saveAndExit() {
+		saveSettings(fbc.getApplicationSettings());
+		exit();
+	}
+
+	private void exit() {
+		System.exit(0);
+	}
+
+	public void onAction(Action event) {
+
 		if (event.getSource() == loginScreen) {
 			if (event.getAction().equals(LoginScreen.ACTION_LOGGED_IN)) {
 				try {
@@ -172,17 +162,23 @@ public class StrawBerry extends UiApplication implements ActionListener {
 				}
 
 				try {
-					FacebookContext.getInstance().getSession((String) event.getData());
-					FacebookContext.getInstance().upgradeSession();
+					fbc.getSession((String) event.getData());
+					fbc.upgradeSession();
 
+					permissionScreen = new PermissionScreen(fbc, cookieManager);
+					permissionScreen.addActionListener(this);
 					permissionScreen.requestPermissions(new String[] { ExtendedPermission.OFFLINE_ACCESS, ExtendedPermission.PUBLISH_STREAM });
 					pushScreen(permissionScreen);
-				} catch (Exception e) {
-					Dialog.alert("Error: " + e.getMessage());
+
+				} catch (Throwable t) {
+					t.printStackTrace();
+					Dialog.alert("Error: " + t.getMessage());
 				}
+
 			} else if (event.getAction().equals(LoginScreen.ACTION_ERROR)) {
 				Dialog.alert("Error: " + event.getData());
 			}
+
 		} else if (event.getSource() == permissionScreen) {
 			if (event.getAction().equals(PermissionScreen.ACTION_GRANTED)) {
 				try {
@@ -191,80 +187,75 @@ public class StrawBerry extends UiApplication implements ActionListener {
 				}
 
 				try {
-					synchronized (store) {
-						store.setContents(settings);
-						store.commit();
-					}
-
 					if (homeScreen == null) {
-						homeScreen = new HomeScreen();
+						homeScreen = new HomeScreen(fbc);
 						homeScreen.addActionListener(this);
 					}
-
 					pushScreen(homeScreen);
-					Dialog.inform("Hello " + FacebookContext.getInstance().getLoggedInUser().getFirstName() + "!");
+					Dialog.inform("Hello " + fbc.getLoggedInUser().getFirstName() + "!");
+
 				} catch (Exception e) {
+					e.printStackTrace();
 					Dialog.alert("Error: " + e.getMessage());
 				}
 			} else if (event.getAction().equals(PermissionScreen.ACTION_ERROR)) {
 				Dialog.alert("Error: " + event.getData());
 			}
+
 		} else if (event.getSource() == homeScreen) {
 			if (event.getAction().equals(UpdateStatusScreen.ACTION_ENTER)) {
 				if (updateStatusScreen == null) {
-					updateStatusScreen = new UpdateStatusScreen();
+					updateStatusScreen = new UpdateStatusScreen(fbc);
 					updateStatusScreen.addActionListener(this);
 				}
-
 				pushScreen(updateStatusScreen);
+
 			} else if (event.getAction().equals(RecentUpdatesScreen.ACTION_ENTER)) {
 				if (recentUpdatesScreen == null) {
-					recentUpdatesScreen = new RecentUpdatesScreen();
+					recentUpdatesScreen = new RecentUpdatesScreen(fbc);
 					recentUpdatesScreen.addActionListener(this);
 				}
-
 				recentUpdatesScreen.loadList();
 				pushScreen(recentUpdatesScreen);
+
 			} else if (event.getAction().equals(UploadPhotoScreen.ACTION_ENTER)) {
 				if (uploadPhotoScreen == null) {
-					uploadPhotoScreen = new UploadPhotoScreen();
+					uploadPhotoScreen = new UploadPhotoScreen(fbc);
 					uploadPhotoScreen.addActionListener(this);
 				}
-
 				pushScreen(uploadPhotoScreen);
+
 			} else if (event.getAction().equals(FriendsListScreen.ACTION_ENTER)) {
 				if (friendsListScreen == null) {
-					friendsListScreen = new FriendsListScreen();
+					friendsListScreen = new FriendsListScreen(fbc);
 					friendsListScreen.addActionListener(this);
 				}
-
 				friendsListScreen.loadList();
 				pushScreen(friendsListScreen);
+
 			} else if (event.getAction().equals(PokeFriendScreen.ACTION_ENTER)) {
 				if (pokeFriendScreen == null) {
-					pokeFriendScreen = new PokeFriendScreen();
+					pokeFriendScreen = new PokeFriendScreen(fbc);
 					pokeFriendScreen.addActionListener(this);
 				}
-
-				//				pokeFriendScreen.loadList();
 				pushScreen(pokeFriendScreen);
+
 			} else if (event.getAction().equals(PostWallScreen.ACTION_ENTER)) {
 				if (postWallScreen == null) {
-					postWallScreen = new PostWallScreen();
+					postWallScreen = new PostWallScreen(fbc);
 					postWallScreen.addActionListener(this);
 				}
-
 				postWallScreen.loadList();
 				pushScreen(postWallScreen);
+
 			} else if (event.getAction().equals(SendMessageScreen.ACTION_ENTER)) {
 				if (sendMessageScreen == null) {
-					sendMessageScreen = new SendMessageScreen();
+					sendMessageScreen = new SendMessageScreen(fbc);
 					sendMessageScreen.addActionListener(this);
 				}
-
-				//sendMessageScreen.loadList();
 				pushScreen(sendMessageScreen);
 			}
+
 		} else if (event.getSource() == updateStatusScreen) {
 			if (event.getAction().equals(UpdateStatusScreen.ACTION_SUCCESS)) {
 				Dialog.inform("Status updated");
@@ -273,9 +264,11 @@ public class StrawBerry extends UiApplication implements ActionListener {
 					popScreen(updateStatusScreen);
 				} catch (IllegalArgumentException e) {
 				}
+
 			} else if (event.getAction().equals(UpdateStatusScreen.ACTION_SUCCESS)) {
 				Dialog.alert("Error: " + event.getData());
 			}
+
 		} else if (event.getSource() == recentUpdatesScreen) {
 			if (event.getAction().equals(RecentUpdatesScreen.ACTION_SUCCESS)) {
 				try {

@@ -27,25 +27,33 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.action;
+package samples.StrawBerry;
 
-/**
- * ActionListener
- * 
- * Represents the action listener.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public interface ActionListener {
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.ui.FacebookScreen;
+
+import net.rim.device.api.ui.component.Dialog;
+import net.rim.device.api.ui.component.LabelField;
+
+final class SendMessageScreen extends FacebookScreen {
+
+	// List of actions:
+	static final String ACTION_ENTER = "sendMessage";
+	static final String ACTION_SUCCESS = "messageSent";
+	static final String ACTION_ERROR = "error";
+
+	// List of labels:
+	private static final String LABEL_TITLE = "Send Message";
 
 	/**
-	 * Fired when action event is emitted.
+	 * Default constructor.
 	 * 
-	 * @param event
-	 *            the action event object.
 	 */
-	public void actioned(ActionEvent event);
+	SendMessageScreen(FacebookContext pfbc) {
+		super(pfbc);
+		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
+		setTitle(titleLabel);
+		Dialog.alert("Not implemented yet.");
+	}
 
 }

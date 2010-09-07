@@ -27,40 +27,33 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.util;
+package samples.StrawBerry;
 
-/**
- * Logger
- * 
- * Represents a logger.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public interface Logger {
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.ui.FacebookScreen;
+import com.blackberry.facebook.util.log.Loggable;
+import net.rim.device.api.ui.component.Dialog;
+import net.rim.device.api.ui.component.LabelField;
 
-	/**
-	 * Obtain the logger's name.
-	 * 
-	 * @return the name.
-	 */
-	public String getName();
+final class UploadPhotoScreen extends FacebookScreen implements Loggable {
+
+	// List of actions:
+	static final String ACTION_ENTER = "uploadPhoto";
+	static final String ACTION_SUCCESS = "photoUploaded";
+	static final String ACTION_ERROR = "error";
+
+	// List of labels:
+	private static final String LABEL_TITLE = "Upload Photo";
 
 	/**
-	 * Log a debug message.
+	 * Default constructor.
 	 * 
-	 * @param message
-	 *            the message to log.
 	 */
-	public void debug(String message);
-
-	/**
-	 * Log an error message.
-	 * 
-	 * @param message
-	 *            the message to log.
-	 */
-	public void error(String message);
+	UploadPhotoScreen(FacebookContext pfbc) {
+		super(pfbc);
+		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
+		Dialog.alert("Not implemented yet.");
+		log.debug("Inside Upload Photo");
+	}
 
 }

@@ -27,26 +27,19 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.samples;
+package samples.StrawBerry;
 
-import facebook.FacebookContext;
-import facebook.FacebookException;
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.ui.FacebookScreen;
+
 import net.rim.device.api.ui.Manager;
 import net.rim.device.api.ui.component.ButtonField;
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.SeparatorField;
 import net.rim.device.api.ui.container.VerticalFieldManager;
-import blackberry.ui.AbstractScreen;
 
-/**
- * HomeScreen
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-final class HomeScreen extends AbstractScreen {
+final class HomeScreen extends FacebookScreen {
 
 	// List of labels:
 	private static final String LABEL_TITLE = "StrawBerry";
@@ -70,7 +63,10 @@ final class HomeScreen extends AbstractScreen {
 	 * Default constructor.
 	 * 
 	 */
-	HomeScreen() {
+	HomeScreen(FacebookContext pfbc) {
+
+		super(pfbc);
+
 		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
 		setTitle(titleLabel);
 
@@ -79,7 +75,7 @@ final class HomeScreen extends AbstractScreen {
 
 		updateStatusButton = new ButtonField(LABEL_UPDATE_STATUS) {
 			protected boolean invokeAction(int action) {
-				fireActioned(UpdateStatusScreen.ACTION_ENTER);
+				fireAction(UpdateStatusScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -87,7 +83,7 @@ final class HomeScreen extends AbstractScreen {
 
 		recentUpdatesButton = new ButtonField(LABEL_RECENT_UPDATES) {
 			protected boolean invokeAction(int action) {
-				fireActioned(RecentUpdatesScreen.ACTION_ENTER);
+				fireAction(RecentUpdatesScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -95,7 +91,7 @@ final class HomeScreen extends AbstractScreen {
 
 		uploadPhotoButton = new ButtonField(LABEL_UPLOAD_PHOTO) {
 			protected boolean invokeAction(int action) {
-				fireActioned(UploadPhotoScreen.ACTION_ENTER);
+				fireAction(UploadPhotoScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -103,7 +99,7 @@ final class HomeScreen extends AbstractScreen {
 
 		friendListButton = new ButtonField(LABEL_FRIENDS_LIST) {
 			protected boolean invokeAction(int action) {
-				fireActioned(FriendsListScreen.ACTION_ENTER);
+				fireAction(FriendsListScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -111,7 +107,7 @@ final class HomeScreen extends AbstractScreen {
 
 		pokeButton = new ButtonField(LABEL_POKE_FRIEND) {
 			protected boolean invokeAction(int action) {
-				fireActioned(PokeFriendScreen.ACTION_ENTER);
+				fireAction(PokeFriendScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -119,7 +115,7 @@ final class HomeScreen extends AbstractScreen {
 
 		wallButton = new ButtonField(LABEL_WRITE_WALL) {
 			protected boolean invokeAction(int action) {
-				fireActioned(PostWallScreen.ACTION_ENTER);
+				fireAction(PostWallScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -127,7 +123,7 @@ final class HomeScreen extends AbstractScreen {
 
 		sendMessageButton = new ButtonField(LABEL_SEND_MESSAGE) {
 			protected boolean invokeAction(int action) {
-				fireActioned(SendMessageScreen.ACTION_ENTER);
+				fireAction(SendMessageScreen.ACTION_ENTER);
 				return true;
 			}
 		};
@@ -138,14 +134,9 @@ final class HomeScreen extends AbstractScreen {
 
 	public boolean onClose() {
 		if (Dialog.ask("Please choose:", new String[] { "Exit", "Logout & Exit" }, 0) == 0) {
-			System.exit(0);
+			((StrawBerry) getApplication()).saveAndExit();
 		} else {
-			try {
-				FacebookContext.getInstance().clearSession();
-			} catch (FacebookException e) {
-				e.printStackTrace();
-			}
-			System.exit(0);
+			((StrawBerry) getApplication()).logoutAndExit();
 		}
 		return true;
 	}

@@ -27,15 +27,16 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.samples;
+package samples.StrawBerry;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import facebook.FacebookContext;
-import facebook.Post;
-
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.User;
+import com.blackberry.facebook.ui.FacebookScreen;
+import com.blackberry.facebook.util.log.Loggable;
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.Display;
 import net.rim.device.api.ui.DrawStyle;
@@ -44,30 +45,16 @@ import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ListField;
 import net.rim.device.api.ui.component.ListFieldCallback;
-import blackberry.net.HttpClient;
-import blackberry.ui.AbstractScreen;
-import blackberry.util.Logger;
-import blackberry.util.LoggerFactory;
 
-/**
- * RecentUpdatesScreen
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-final class RecentUpdatesScreen extends AbstractScreen {
-
-	// Logger
-	private static final Logger log = LoggerFactory.getLogger(RecentUpdatesScreen.class.getName());
+final class FriendsListScreen extends FacebookScreen implements Loggable {
 
 	// List of actions:
-	static final String ACTION_ENTER = "recentUpdates";
+	static final String ACTION_ENTER = "friendsList";
 	static final String ACTION_SUCCESS = "success";
 	static final String ACTION_ERROR = "error";
 
 	// List of labels:
-	private static final String LABEL_TITLE = "Recent Updates";
+	private static final String LABEL_TITLE = "Friends List";
 
 	private ListField listField;
 	private StreamListCallback streamListCallback = new StreamListCallback();
@@ -76,7 +63,8 @@ final class RecentUpdatesScreen extends AbstractScreen {
 	 * Default constructor.
 	 * 
 	 */
-	RecentUpdatesScreen() {
+	FriendsListScreen(FacebookContext pfbc) {
+		super(pfbc);
 		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
 
 		listField = new ListField();
@@ -86,7 +74,7 @@ final class RecentUpdatesScreen extends AbstractScreen {
 	}
 
 	/**
-	 * Load the list of posts.
+	 * Load the list of friends.
 	 * 
 	 */
 	void loadList() {
@@ -95,49 +83,66 @@ final class RecentUpdatesScreen extends AbstractScreen {
 		}
 
 		try {
-			Post[] posts = FacebookContext.getInstance().getLoggedInUser().getStream(5);
+			//			User[] users = Facebook.getInstance().getLoggedInUser().getFriends();
+			User[] users = fbc.getLoggedInUser().getFriends();
 			streamListCallback.clear();
 
-			for (int i = 0; i < posts.length; i++) {
+			for (int i = 0; i < users.length; i++) {
 				listField.insert(listField.getSize());
-				streamListCallback.add(posts[i]);
+				streamListCallback.add(users[i]);
 			}
 
 			streamListCallback.loadBitmaps();
+
 		} catch (Exception e) {
-			fireActioned(ACTION_ERROR, e.getMessage());
+			fireAction(ACTION_ERROR, e.getMessage());
 		}
+	}
+
+	public boolean onClose() {
+		streamListCallback.stopLoading();
+		return super.onClose();
 	}
 
 	private class StreamListCallback implements ListFieldCallback {
 
-		private Vector posts = new Vector();
+		private Vector friends = new Vector();
 		private Hashtable pictureBitmaps = new Hashtable();
+		private boolean runThread = false;
 
 		public StreamListCallback() {
 		}
 
 		public void clear() {
-			posts.removeAllElements();
+			friends.removeAllElements();
 		}
 
-		public void add(Post post) {
-			posts.addElement(post);
+		public void add(User user) {
+			friends.addElement(user);
 		}
 
-		public void insert(Post post, int index) {
-			posts.insertElementAt(post, index);
+		public void insert(User user, int index) {
+			friends.insertElementAt(user, index);
 		}
 
 		public void loadBitmaps() {
+			startLoading();
 			(new BitmapThread()).start();
 		}
 
+		public void startLoading() {
+			runThread = true;
+		}
+
+		public void stopLoading() {
+			runThread = false;
+		}
+
 		public void drawListRow(ListField listField, Graphics g, int index, int y, int width) {
-			if (index < posts.size()) {
+			if (index < friends.size()) {
 				int height = listField.getRowHeight();
-				Post post = (Post) posts.elementAt(index);
-				Bitmap bitmap = getBitmap(post.getPoster().getId());
+				User user = (User) friends.elementAt(index);
+				Bitmap bitmap = getBitmap(user.getId());
 
 				if (bitmap != null) {
 					g.drawBitmap(0, y + ((height - Math.min(bitmap.getHeight(), height)) / 2), 50, height, bitmap, 0, 0);
@@ -146,15 +151,15 @@ final class RecentUpdatesScreen extends AbstractScreen {
 				Font font = Font.getDefault();
 				font.derive(Font.BOLD);
 				g.setFont(font);
-				g.drawText(post.getMessage(), 52, y, 0, width - 52);
-				g.drawText(((post.getComments() != null) ? post.getComments().length : 0) + " Comments, " + post.getLikesCount() + " Likes", 52, y + (height / 2), DrawStyle.ELLIPSIS, width - 52);
+				g.drawText(user.getFullName(), 52, y, 0, width - 52);
+				g.drawText(/* user.getLikesCount() */" ", 52, y + (height / 2), DrawStyle.ELLIPSIS, width - 52);
 				g.drawLine(0, y + height - 1, width, y + height - 1);
 			}
 		}
 
 		public Object get(ListField listField, int index) {
-			if (index < posts.size()) {
-				return posts.elementAt(index);
+			if (index < friends.size()) {
+				return friends.elementAt(index);
 			}
 
 			return null;
@@ -165,10 +170,10 @@ final class RecentUpdatesScreen extends AbstractScreen {
 		}
 
 		public int indexOfList(ListField listField, String prefix, int start) {
-			for (int i = start; i < posts.size(); i++) {
-				Post post = (Post) posts.elementAt(i);
+			for (int i = start; i < friends.size(); i++) {
+				User user = (User) friends.elementAt(i);
 
-				if (post.getMessage().indexOf(prefix) > -1) {
+				if (user.getFullName().indexOf(prefix) > -1) {
 					return i;
 				}
 			}
@@ -183,15 +188,15 @@ final class RecentUpdatesScreen extends AbstractScreen {
 		private class BitmapThread extends Thread {
 
 			public void run() {
-				Enumeration postsEnum = posts.elements();
+				Enumeration usersEnum = friends.elements();
 
-				while (postsEnum.hasMoreElements()) {
-					Post post = (Post) postsEnum.nextElement();
-					String id = post.getPoster().getId();
+				while (runThread && usersEnum.hasMoreElements()) {
+					User user = (User) usersEnum.nextElement();
+					String id = user.getId();
 					String url = "http://graph.facebook.com/" + id + "/picture?type=square";
 
 					try {
-						StringBuffer response = HttpClient.doGet(url);
+						StringBuffer response = (fbc.getHttpClient()).doGet(url);
 						byte[] data = response.toString().getBytes();
 
 						if (data.length > 0) {

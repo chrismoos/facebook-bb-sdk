@@ -27,42 +27,33 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package blackberry.facebook;
+package samples.StrawBerry;
 
-/**
- * ExtendedPermission
- * 
- * Contains a collection of extended permission constants.
- * 
- * @author Eki Baskoro
- * @version 0.1
- * 
- */
-public interface ExtendedPermission {
+import com.blackberry.facebook.FacebookContext;
+import com.blackberry.facebook.ui.FacebookScreen;
 
-	/**
-	 * Access Emails.
-	 */
-	public static final String EMAIL = "email";
+import net.rim.device.api.ui.component.Dialog;
+import net.rim.device.api.ui.component.LabelField;
 
-	/**
-	 * Read streams.
-	 */
-	public static final String READ_STREAM = "read_stream";
+final class PokeFriendScreen extends FacebookScreen {
+
+	// List of actions:
+	static final String ACTION_ENTER = "pokeFriend";
+	static final String ACTION_SUCCESS = "friendPoked";
+	static final String ACTION_ERROR = "error";
+
+	// List of labels:
+	private static final String LABEL_TITLE = "Poke Friend";
 
 	/**
-	 * Publish streams.
+	 * Default constructor.
+	 * 
 	 */
-	public static final String PUBLISH_STREAM = "publish_stream";
-
-	/**
-	 * Access account on behalf.
-	 */
-	public static final String OFFLINE_ACCESS = "offline_access";
-
-	/**
-	 * Facebook Chat access.
-	 */
-	public static final String XMPP_LOGIN = "xmpp_login";
+	PokeFriendScreen(FacebookContext pfbc) {
+		super(pfbc);
+		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
+		setTitle(titleLabel);
+		Dialog.alert("Not implemented yet.");
+	}
 
 }
