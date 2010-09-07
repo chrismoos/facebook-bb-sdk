@@ -27,33 +27,33 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.StrawBerry;
+package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
-
+import com.blackberry.facebook.util.log.Loggable;
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
 
-final class PokeFriendScreen extends FacebookScreen {
+final class UploadPhotoScreen extends FacebookScreen implements Loggable {
 
 	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
+	static final String ACTION_ENTER = "uploadPhoto";
+	static final String ACTION_SUCCESS = "photoUploaded";
 	static final String ACTION_ERROR = "error";
 
 	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	private static final String LABEL_TITLE = "Upload Photo";
 
 	/**
 	 * Default constructor.
 	 * 
 	 */
-	PokeFriendScreen(FacebookContext pfbc) {
+	UploadPhotoScreen(FacebookContext pfbc) {
 		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
+		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
 		Dialog.alert("Not implemented yet.");
+		log.debug("Inside Upload Photo");
 	}
 
 }

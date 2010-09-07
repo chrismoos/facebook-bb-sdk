@@ -27,7 +27,7 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.StrawBerry;
+package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.ExtendedPermission;
@@ -55,7 +55,7 @@ public class StrawBerry extends UiApplication implements ActionListener, Loggabl
 	private final String APPLICATION_KEY = "f21032d377681e02051e639830b4b678"; // Your Facebook Application Key. 
 	private final String APPLICATION_SECRET = "590906fcfea8e348589cf43f06192c2e"; // Your Facebook Application Secret.
 	private final String APPLICATION_ID = "317175255300"; // Your Facebook Application ID.
-	private final long persistentObjectId = 0xed5edecbc209760eL; // samples.StrawBerry.StrawBerry
+	private final long persistentObjectId = 0xed5edecbc209760eL; // com.blackberry.facebook.samples.strawberry.StrawBerry
 
 	private PersistentObject store;
 	private HttpConnectionFactory connFactory;

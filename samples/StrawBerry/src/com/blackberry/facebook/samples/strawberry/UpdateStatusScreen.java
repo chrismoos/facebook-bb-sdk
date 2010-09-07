@@ -27,33 +27,61 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.StrawBerry;
+package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.facebook.util.log.Loggable;
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
 
-final class UploadPhotoScreen extends FacebookScreen implements Loggable {
+import net.rim.device.api.ui.Field;
+import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.component.ButtonField;
+import net.rim.device.api.ui.component.EditField;
+import net.rim.device.api.ui.component.LabelField;
+import net.rim.device.api.ui.component.Menu;
+
+final class UpdateStatusScreen extends FacebookScreen {
 
 	// List of actions:
-	static final String ACTION_ENTER = "uploadPhoto";
-	static final String ACTION_SUCCESS = "photoUploaded";
+	static final String ACTION_ENTER = "updateStatus";
+	static final String ACTION_SUCCESS = "statusUpdated";
 	static final String ACTION_ERROR = "error";
 
 	// List of labels:
-	private static final String LABEL_TITLE = "Upload Photo";
+	private static final String LABEL_TITLE = "Update Status";
+	private static final String LABEL_UPDATE = "Update My Status";
+
+	private EditField editField;
+	private ButtonField buttonField;
 
 	/**
 	 * Default constructor.
 	 * 
 	 */
-	UploadPhotoScreen(FacebookContext pfbc) {
+	UpdateStatusScreen(FacebookContext pfbc) {
 		super(pfbc);
 		setTitle(new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH));
-		Dialog.alert("Not implemented yet.");
-		log.debug("Inside Upload Photo");
+
+		editField = new EditField(LabelField.USE_ALL_WIDTH);
+		add(editField);
+
+		buttonField = new ButtonField(LABEL_UPDATE);
+		buttonField.setChangeListener(new FieldChangeListener() {
+
+			public void fieldChanged(Field field, int context) {
+				try {
+					fbc.getLoggedInUser().setStatus(editField.getText());
+					fireAction(ACTION_SUCCESS);
+				} catch (Exception e) {
+					fireAction(ACTION_ERROR, e.getMessage());
+				}
+			}
+
+		});
+		add(buttonField);
+	}
+
+	protected void makeMenu(Menu menu, int instance) {
+		menu.deleteAll();
 	}
 
 }

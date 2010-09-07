@@ -27,7 +27,7 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.StrawBerry;
+package com.blackberry.facebook.samples.strawberry;
 
 import java.util.Enumeration;
 import java.util.Hashtable;

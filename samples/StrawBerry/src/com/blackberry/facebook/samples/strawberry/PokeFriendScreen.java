@@ -27,7 +27,7 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.StrawBerry;
+package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
@@ -35,21 +35,21 @@ import com.blackberry.facebook.ui.FacebookScreen;
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
 
-final class SendMessageScreen extends FacebookScreen {
+final class PokeFriendScreen extends FacebookScreen {
 
 	// List of actions:
-	static final String ACTION_ENTER = "sendMessage";
-	static final String ACTION_SUCCESS = "messageSent";
+	static final String ACTION_ENTER = "pokeFriend";
+	static final String ACTION_SUCCESS = "friendPoked";
 	static final String ACTION_ERROR = "error";
 
 	// List of labels:
-	private static final String LABEL_TITLE = "Send Message";
+	private static final String LABEL_TITLE = "Poke Friend";
 
 	/**
 	 * Default constructor.
 	 * 
 	 */
-	SendMessageScreen(FacebookContext pfbc) {
+	PokeFriendScreen(FacebookContext pfbc) {
 		super(pfbc);
 		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
 		setTitle(titleLabel);
