@@ -27,45 +27,35 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package com.blackberry.facebook.util.log;
+package com.blackberry.util.log;
 
 import java.util.Date;
 
-import net.rim.device.api.i18n.SimpleDateFormat;
-
-public class ConsoleLogger implements Logger {
-
-	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss z");
-
-	private String name;
-
-	ConsoleLogger(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return null;
-	}
+public class ConsoleLogger extends AbstractLogger {
 
 	public void debug(String message) {
-		System.out.println("[DEBUG] " + simpleDateFormat.format(new Date()) + " " + name + ": " + message);
+		System.out.println("[DEBUG] " + simpleDateFormat.format(new Date()) + ": " + message);
 	}
 
 	public void info(String message) {
-		System.out.println("[INFO] " + simpleDateFormat.format(new Date()) + " " + name + ": " + message);
+		System.out.println("[INFO] " + simpleDateFormat.format(new Date()) + ": " + message);
 	}
 
 	public void warn(String message) {
-		System.out.println("[WARN] " + simpleDateFormat.format(new Date()) + " " + name + ": " + message);
+		System.out.println("[WARN] " + simpleDateFormat.format(new Date()) + ": " + message);
 	}
 
 	public void error(String message) {
-		System.out.println("[ERROR] " + simpleDateFormat.format(new Date()) + " " + name + ": " + message);
+		System.out.println("[ERROR] " + simpleDateFormat.format(new Date()) + ": " + message);
 
 	}
 
 	public void fatal(String message) {
-		System.out.println("[FATAL] " + simpleDateFormat.format(new Date()) + " " + name + ": " + message);
+		System.out.println("[FATAL] " + simpleDateFormat.format(new Date()) + ": " + message);
+	}
+
+	public void close() {
+
 	}
 
 }

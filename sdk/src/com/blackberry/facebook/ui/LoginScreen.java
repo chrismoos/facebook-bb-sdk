@@ -31,52 +31,53 @@ package com.blackberry.facebook.ui;
 
 import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.util.log.Loggable;
-import com.blackberry.facebook.util.network.CookieManager;
+import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.network.CookieManager;
 
-public class LoginScreen extends BrowserScreen implements ActionListener, Loggable {
+public class LoginScreen extends BrowserScreen implements ActionListener, RichTextLoggable {
 
-	// List of actions:
 	public static final String ACTION_SUCCESS = "success";
 	public static final String ACTION_LOGGED_IN = "loggedIn";
 	public static final String ACTION_ERROR = "error";
 
 	private ApplicationSettings settings;
 
-	/**
-	 * Create Login Screen.
-	 * 
-	 * @param settings
-	 *            Facebook Application settings.
-	 * @param cookieManager
-	 *            cookie manager.
-	 */
 	public LoginScreen(FacebookContext pfbc, CookieManager cookieManager) {
 		super(new StringBuffer().append("http://m.facebook.com/tos.php?").append("api_key=").append(pfbc.getApplicationSettings().applicationKey).append('&').append("v=1.0").append('&').append("next=").append(pfbc.getApplicationSettings().nextUrl).toString(), pfbc, cookieManager);
 		settings = pfbc.getApplicationSettings();
 		addActionListener(this);
-		log.debug("URL: " + getUrl());
+		log.info("(LoginScreen) URL: " + getUrl());
+		testLog();
 	}
 
-	/**
-	 * Perform login.
-	 * 
-	 */
+	private void testLog() {
+
+		console.debug("************************** LoginScreen.console.xxx() **********************************");
+		console.debug("This is just a testing log message.");
+		console.info("This is just a testing log message.");
+		console.warn("This is just a testing log message.");
+		console.error("This is just a testing log message.");
+		console.fatal("This is just a testing log message.");
+		console.debug("************************** /LoginScreen.console.xxx() **********************************");
+
+		log.debug("************************** LoginScreen.log.xxx() **********************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("************************** /LoginScreen.log.xxx() **********************************");
+	}
+
 	public void login() {
 		browse();
 	}
 
-	/**
-	 * Action handler.
-	 * 
-	 * @param event
-	 *            the action event to handle.
-	 */
 	public void onAction(Action event) {
 		if (event.getSource() == this) {
 			if (event.getAction().equals(ACTION_SUCCESS) && getUrl().startsWith(settings.nextUrl)) {
 				String url = getUrl();
-				log.debug("URL: " + url);
+				log.info("(LoginScreen.ACTION_SUCCESS) URL: " + url);
 				int startIndex = url.indexOf("auth_token");
 
 				if (startIndex > -1) {
@@ -89,6 +90,7 @@ public class LoginScreen extends BrowserScreen implements ActionListener, Loggab
 					}
 
 					String authToken = url.substring(url.indexOf('=', startIndex) + 1, stopIndex);
+					log.debug("auth_token = " + authToken);
 					fireAction(ACTION_LOGGED_IN, authToken);
 				}
 			}

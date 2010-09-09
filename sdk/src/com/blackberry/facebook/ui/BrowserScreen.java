@@ -35,8 +35,8 @@ import java.util.Vector;
 import javax.microedition.io.HttpConnection;
 
 import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.util.network.CookieManager;
-import com.blackberry.facebook.util.network.HttpConnectionFactory;
+import com.blackberry.util.network.CookieManager;
+import com.blackberry.util.network.HttpConnectionFactory;
 
 import net.rim.device.api.browser.field.BrowserContent;
 import net.rim.device.api.browser.field.BrowserContentChangedEvent;

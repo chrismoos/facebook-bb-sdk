@@ -31,10 +31,10 @@ package com.blackberry.facebook.ui;
 
 import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.util.log.Loggable;
-import com.blackberry.facebook.util.network.CookieManager;
+import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.network.CookieManager;
 
-public class PermissionScreen extends BrowserScreen implements ActionListener, Loggable {
+public class PermissionScreen extends BrowserScreen implements ActionListener, RichTextLoggable {
 
 	// List of actions:
 	public static final String ACTION_SUCCESS = "success";

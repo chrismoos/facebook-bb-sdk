@@ -34,9 +34,9 @@ import java.util.Hashtable;
 
 import com.blackberry.facebook.json.JSONObject;
 import com.blackberry.facebook.json.JSONTokener;
-import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.util.log.RichTextLoggable;
 
-public class GraphContext implements Graph, Loggable {
+public class GraphContext implements Graph, RichTextLoggable {
 
 	protected String providerUrl = null;
 	protected String accessToken = null;

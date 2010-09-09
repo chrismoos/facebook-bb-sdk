@@ -27,7 +27,7 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package com.blackberry.facebook.util.network;
+package com.blackberry.util.network;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,7 +36,7 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
-import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.util.log.RichTextLoggable;
 
 import net.rim.device.api.io.http.HttpHeaders;
 import net.rim.device.api.io.http.HttpProtocolConstants;
@@ -47,7 +47,7 @@ import net.rim.device.api.system.CoverageInfo;
 import net.rim.device.api.system.DeviceInfo;
 import net.rim.device.api.system.WLANInfo;
 
-public class HttpConnectionFactory implements Loggable {
+public class HttpConnectionFactory implements RichTextLoggable {
 
 	public static final int TRANSPORT_WIFI = 1;
 	public static final int TRANSPORT_BES = 2;

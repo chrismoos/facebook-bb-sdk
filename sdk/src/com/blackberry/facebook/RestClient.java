@@ -38,8 +38,8 @@ import net.rim.device.api.util.StringComparator;
 
 import com.blackberry.facebook.json.JSONObject;
 import com.blackberry.facebook.json.JSONTokener;
-import com.blackberry.facebook.util.network.HttpClient;
-import com.blackberry.facebook.util.network.HttpConnectionFactory;
+import com.blackberry.util.network.HttpClient;
+import com.blackberry.util.network.HttpConnectionFactory;
 
 public class RestClient {
 

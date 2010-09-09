@@ -32,9 +32,9 @@ package com.blackberry.facebook;
 import com.blackberry.facebook.json.JSONArray;
 import com.blackberry.facebook.json.JSONException;
 import com.blackberry.facebook.json.JSONObject;
-import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.util.log.RichTextLoggable;
 
-public class UserImpl implements User, Loggable {
+public class UserImpl implements User, RichTextLoggable {
 
 	private Graph graph = null;
 	private JSONObject jsonObject = null;

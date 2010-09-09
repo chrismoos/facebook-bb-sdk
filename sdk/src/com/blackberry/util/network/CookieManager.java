@@ -27,7 +27,7 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package com.blackberry.facebook.util.network;
+package com.blackberry.util.network;
 
 import java.util.Hashtable;
 import java.util.Vector;

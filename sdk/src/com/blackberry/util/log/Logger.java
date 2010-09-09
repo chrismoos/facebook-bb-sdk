@@ -27,16 +27,25 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package com.blackberry.facebook.util.network;
+package com.blackberry.util.log;
 
-public class HttpConnectionFactoryException extends Exception {
+public interface Logger {
 
-	public HttpConnectionFactoryException(String string) {
-		super(string);
-	}
+	public static int CONSOLE = 0;
+	public static int TEXT_FILE = 1;
+	public static int RICH_TEXT_FILE = 2;
+	public static int SCREEN = 3;
 
-	public HttpConnectionFactoryException() {
-		super();
-	}
+	public void close();
+
+	public void debug(String message);
+
+	public void info(String message);
+
+	public void warn(String message);
+
+	public void error(String message);
+
+	public void fatal(String message);
 
 }

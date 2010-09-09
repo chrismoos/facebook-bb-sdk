@@ -34,11 +34,11 @@ import java.util.Hashtable;
 import com.blackberry.facebook.json.JSONArray;
 import com.blackberry.facebook.json.JSONObject;
 import com.blackberry.facebook.json.JSONTokener;
-import com.blackberry.facebook.util.log.Loggable;
-import com.blackberry.facebook.util.network.HttpClient;
-import com.blackberry.facebook.util.network.HttpConnectionFactory;
+import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.network.HttpClient;
+import com.blackberry.util.network.HttpConnectionFactory;
 
-public class FacebookContext implements Facebook, Loggable {
+public class FacebookContext implements Facebook, RichTextLoggable {
 
 	private ApplicationSettings settings = null;
 	private RestClient restClient = null;
