@@ -37,16 +37,19 @@ import com.blackberry.facebook.ui.Action;
 import com.blackberry.facebook.ui.ActionListener;
 import com.blackberry.facebook.ui.LoginScreen;
 import com.blackberry.facebook.ui.PermissionScreen;
-import com.blackberry.facebook.util.log.Loggable;
-import com.blackberry.facebook.util.network.CookieManager;
-import com.blackberry.facebook.util.network.HttpConnectionFactory;
+import com.blackberry.util.log.Logger;
+import com.blackberry.util.log.LoggerFactory;
+import com.blackberry.util.network.CookieManager;
+import com.blackberry.util.network.HttpConnectionFactory;
 
+import net.rim.device.api.applicationcontrol.ApplicationPermissions;
+import net.rim.device.api.applicationcontrol.ApplicationPermissionsManager;
 import net.rim.device.api.system.PersistentObject;
 import net.rim.device.api.system.PersistentStore;
 import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.Dialog;
 
-public class StrawBerry extends UiApplication implements ActionListener, Loggable {
+public class StrawBerry extends UiApplication implements ActionListener {
 
 	// Constants
 	private final String REST_URL = "http://api.facebook.com/restserver.php"; // As per Facebook.
@@ -82,6 +85,7 @@ public class StrawBerry extends UiApplication implements ActionListener, Loggabl
 
 	public StrawBerry() {
 
+		checkPermissions();
 		init();
 
 		if ((fbc != null) && fbc.hasSession()) {
@@ -108,6 +112,35 @@ public class StrawBerry extends UiApplication implements ActionListener, Loggabl
 			loginScreen.login();
 			pushScreen(loginScreen);
 		}
+
+		testLog();
+
+	}
+
+	private void checkPermissions() {
+
+		ApplicationPermissionsManager apm = ApplicationPermissionsManager.getInstance();
+		ApplicationPermissions original = apm.getApplicationPermissions();
+
+		if ((original.getPermission(ApplicationPermissions.PERMISSION_INPUT_SIMULATION) == ApplicationPermissions.VALUE_ALLOW) && (original.getPermission(ApplicationPermissions.PERMISSION_DEVICE_SETTINGS) == ApplicationPermissions.VALUE_ALLOW) && (original.getPermission(ApplicationPermissions.PERMISSION_CROSS_APPLICATION_COMMUNICATION) == ApplicationPermissions.VALUE_ALLOW) && (original.getPermission(ApplicationPermissions.PERMISSION_INTERNET) == ApplicationPermissions.VALUE_ALLOW) && (original.getPermission(ApplicationPermissions.PERMISSION_SERVER_NETWORK) == ApplicationPermissions.VALUE_ALLOW) && (original.getPermission(ApplicationPermissions.PERMISSION_EMAIL) == ApplicationPermissions.VALUE_ALLOW)) {
+			return;
+		}
+
+		ApplicationPermissions permRequest = new ApplicationPermissions();
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_INPUT_SIMULATION);
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_DEVICE_SETTINGS);
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_CROSS_APPLICATION_COMMUNICATION);
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_INTERNET);
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_SERVER_NETWORK);
+		permRequest.addPermission(ApplicationPermissions.PERMISSION_EMAIL);
+
+		boolean acceptance = ApplicationPermissionsManager.getInstance().invokePermissionsRequest(permRequest);
+
+		if (acceptance) {
+			// User has accepted all of the permissions.
+			return;
+		} else {
+		}
 	}
 
 	private void init() {
@@ -126,9 +159,39 @@ public class StrawBerry extends UiApplication implements ActionListener, Loggabl
 
 		} catch (Throwable t) {
 			t.printStackTrace();
-			log.error(t.getMessage());
 			exit();
 		}
+	}
+
+	private void testLog() {
+
+		Logger def = LoggerFactory.getLogger();
+		Logger log = LoggerFactory.getLogger("TEXT");
+		Logger rlog = LoggerFactory.getLogger("RICHTEXT");
+
+		def.debug("************************** StrawBerry.def.xxx() **********************************");
+		def.debug("This is just a testing log message.");
+		def.info("This is just a testing log message.");
+		def.warn("This is just a testing log message.");
+		def.error("This is just a testing log message.");
+		def.fatal("This is just a testing log message.");
+		def.debug("************************** /StrawBerry.def.xxx() **********************************");
+
+		log.debug("************************** StrawBerry.log.xxx() **********************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("************************** /StrawBerry.log.xxx() **********************************");
+
+		rlog.debug("************************** StrawBerry.rlog.xxx() **********************************");
+		rlog.debug("This is just a testing log message.");
+		rlog.info("This is just a testing log message.");
+		rlog.warn("This is just a testing log message.");
+		rlog.error("This is just a testing log message.");
+		rlog.fatal("This is just a testing log message.");
+		rlog.debug("************************** /StrawBerry.rlog.xxx() **********************************");
 	}
 
 	private void saveSettings(ApplicationSettings settings) {
@@ -149,6 +212,7 @@ public class StrawBerry extends UiApplication implements ActionListener, Loggabl
 	}
 
 	private void exit() {
+		LoggerFactory.clear();
 		System.exit(0);
 	}
 

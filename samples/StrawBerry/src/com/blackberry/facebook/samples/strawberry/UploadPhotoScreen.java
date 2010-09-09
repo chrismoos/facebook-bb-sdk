@@ -31,11 +31,12 @@ package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.util.log.RichTextLoggable;
+
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
 
-final class UploadPhotoScreen extends FacebookScreen implements Loggable {
+final class UploadPhotoScreen extends FacebookScreen implements RichTextLoggable {
 
 	// List of actions:
 	static final String ACTION_ENTER = "uploadPhoto";

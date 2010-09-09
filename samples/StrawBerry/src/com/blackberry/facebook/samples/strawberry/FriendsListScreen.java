@@ -36,7 +36,8 @@ import java.util.Vector;
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.User;
 import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.facebook.util.log.Loggable;
+import com.blackberry.util.log.RichTextLoggable;
+
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.Display;
 import net.rim.device.api.ui.DrawStyle;
@@ -46,7 +47,7 @@ import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ListField;
 import net.rim.device.api.ui.component.ListFieldCallback;
 
-final class FriendsListScreen extends FacebookScreen implements Loggable {
+final class FriendsListScreen extends FacebookScreen implements RichTextLoggable {
 
 	// List of actions:
 	static final String ACTION_ENTER = "friendsList";

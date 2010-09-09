@@ -31,6 +31,7 @@ package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
+import com.blackberry.util.log.Loggable;
 
 import net.rim.device.api.ui.Manager;
 import net.rim.device.api.ui.component.ButtonField;
@@ -39,7 +40,7 @@ import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.SeparatorField;
 import net.rim.device.api.ui.container.VerticalFieldManager;
 
-final class HomeScreen extends FacebookScreen {
+final class HomeScreen extends FacebookScreen implements Loggable {
 
 	// List of labels:
 	private static final String LABEL_TITLE = "StrawBerry";
@@ -130,6 +131,27 @@ final class HomeScreen extends FacebookScreen {
 		topManager.add(sendMessageButton);
 
 		add(new SeparatorField());
+
+		testLog();
+	}
+
+	private void testLog() {
+
+		console.debug("************************** HomeScreen.console.xxx() **********************************");
+		console.debug("This is just a testing log message.");
+		console.info("This is just a testing log message.");
+		console.warn("This is just a testing log message.");
+		console.error("This is just a testing log message.");
+		console.fatal("This is just a testing log message.");
+		console.debug("************************** /HomeScreen.console.xxx() **********************************");
+
+		log.debug("************************** HomeScreen.log.xxx() **********************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("************************** /HomeScreen.log.xxx() **********************************");
 	}
 
 	public boolean onClose() {
