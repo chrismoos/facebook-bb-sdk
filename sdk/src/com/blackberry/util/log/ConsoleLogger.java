@@ -29,33 +29,37 @@
  */
 package com.blackberry.util.log;
 
-import java.util.Date;
-
 public class ConsoleLogger extends AbstractLogger {
 
+	public ConsoleLogger(String pName, String pType, String pDestination) {
+		super(pName, pType, pDestination);
+	}
+
 	public void debug(String message) {
-		System.out.println("[DEBUG] " + simpleDateFormat.format(new Date()) + ": " + message);
+		System.out.println(formatDebug(message));
 	}
 
 	public void info(String message) {
-		System.out.println("[INFO] " + simpleDateFormat.format(new Date()) + ": " + message);
+		System.out.println(formatInfo(message));
 	}
 
 	public void warn(String message) {
-		System.out.println("[WARN] " + simpleDateFormat.format(new Date()) + ": " + message);
+		System.out.println(formatWarn(message));
 	}
 
 	public void error(String message) {
-		System.out.println("[ERROR] " + simpleDateFormat.format(new Date()) + ": " + message);
+		System.out.println(formatError(message));
 
 	}
 
 	public void fatal(String message) {
-		System.out.println("[FATAL] " + simpleDateFormat.format(new Date()) + ": " + message);
+		System.out.println(formatFatal(message));
 	}
 
 	public void close() {
+	}
 
+	public void clearLog() {
 	}
 
 }

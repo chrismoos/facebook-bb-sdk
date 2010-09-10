@@ -31,12 +31,21 @@ package com.blackberry.util.log;
 
 public interface Logger {
 
-	public static int CONSOLE = 0;
-	public static int TEXT_FILE = 1;
-	public static int RICH_TEXT_FILE = 2;
-	public static int SCREEN = 3;
+	public static String CONSOLE = "CONSOLE";
+	public static String TEXT_FILE = "TEXT_FILE";
+	public static String RICH_TEXT_FILE = "RICH_TEXT_FILE";
+	public static String SCREEN = "SCREEN";
+	public static String EVENT_LOG = "EVENT_LOG";
 
 	public void close();
+
+	public void clearLog();
+
+	public String getName();
+
+	public String getType();
+
+	public String getDestination();
 
 	public void debug(String message);
 

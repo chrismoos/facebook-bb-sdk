@@ -1,36 +1,58 @@
+/**
+ * Copyright (c) E.Y. Baskoro, Research In Motion Limited.
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without 
+ * restriction, including without limitation the rights to use, 
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following 
+ * conditions:
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+ * OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * This License shall be included in all copies or substantial 
+ * portions of the Software.
+ * 
+ * The name(s) of the above copyright holders shall not be used 
+ * in advertising or otherwise to promote the sale, use or other 
+ * dealings in this Software without prior written authorization.
+ * 
+ */
 package com.blackberry.util.log;
-
-import java.util.Date;
 
 public class RichTextFileLogger extends TextFileLogger {
 
-	protected RichTextFileLogger(String pFileName) {
-		super(pFileName);
+	public RichTextFileLogger(String pName, String pType, String pDestination) {
+		super(pName, pType, pDestination);
 	}
 
 	public void debug(String message) {
-		message = "[DEBUG] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeLine("<span style=\"color:" + "#000000" + "\">" + message + "</span><br>");
+		writeLine("<span style=\"color:" + "#000000" + "\">" + formatDebug(message) + "</span><br>");
 	}
 
 	public void info(String message) {
-		message = "[INFO] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeLine("<span style=\"font-weight:bold; color:" + "#00FF00" + "\">" + message + "</span><br>");
+		writeLine("<span style=\"font-weight:bold; color:" + "#00FF00" + "\">" + formatInfo(message) + "</span><br>");
 	}
 
 	public void warn(String message) {
-		message = "[WARN] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeLine("<span style=\"font-weight:bold; color:" + "#F4A460" + "\">" + message + "</span><br>");
+		writeLine("<span style=\"font-weight:bold; color:" + "#F4A460" + "\">" + formatWarn(message) + "</span><br>");
 	}
 
 	public void error(String message) {
-		message = "[ERROR] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + "\">" + message + "</span><br>");
+		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + "\">" + formatError(message) + "</span><br>");
 	}
 
 	public void fatal(String message) {
-		message = "[FATAL] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + ";" + "background-color:" + "#000000" + "\">" + message + "</span><br>");
+		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + ";" + "background-color:" + "#000000" + "\">" + formatFatal(message) + "</span><br>");
 	}
 
 }

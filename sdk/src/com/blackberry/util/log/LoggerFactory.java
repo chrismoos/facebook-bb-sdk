@@ -43,6 +43,7 @@ public class LoggerFactory {
 	private static final String DEFAULT_PROPERTIES_FILENAME = "log.properties";
 
 	private static Hashtable loggers = new Hashtable();
+	private static final Logger GOD_LOGGER = createLogger("", Logger.CONSOLE, null);
 
 	static {
 		load(DEFAULT_PROPERTIES_FILENAME);
@@ -59,7 +60,7 @@ public class LoggerFactory {
 				String[] values = null;
 				String loggerName = null;
 				String loggerType = null;
-				String loggerFileName = null;
+				String loggerDest = null;
 
 				key = ((String) enum.nextElement());
 
@@ -73,28 +74,34 @@ public class LoggerFactory {
 								if (i == 0) {
 									loggerType = values[i].trim();
 								} else if (i == 1) {
-									loggerFileName = values[i].trim();
+									loggerDest = values[i].trim();
 								}
 							}
 
 							// create logger for this line
-							if (loggerType.equals("CONSOLE")) {
-								loggers.put(loggerName, createLogger(loggerName, Logger.CONSOLE, loggerFileName));
+							if (loggerType.equals(Logger.CONSOLE)) {
+								loggers.put(loggerName, createLogger(loggerName, Logger.CONSOLE, loggerDest));
 
-							} else if (loggerType.equals("TEXT_FILE")) {
-								if ((loggerFileName == null) || loggerFileName.equals("")) {
-									loggerFileName = DEFAULT_TEXT_LOG_FILENAME;
+							} else if (loggerType.equals(Logger.TEXT_FILE)) {
+								if ((loggerDest == null) || loggerDest.equals("")) {
+									loggerDest = DEFAULT_TEXT_LOG_FILENAME;
 								}
-								loggers.put(loggerName, createLogger(loggerName, Logger.TEXT_FILE, loggerFileName));
+								loggers.put(loggerName, createLogger(loggerName, Logger.TEXT_FILE, loggerDest));
 
-							} else if (loggerType.equals("RICH_TEXT_FILE")) {
-								if ((loggerFileName == null) || loggerFileName.equals("")) {
-									loggerFileName = DEFAULT_RICHTEXT_LOG_FILENAME;
+							} else if (loggerType.equals(Logger.RICH_TEXT_FILE)) {
+								if ((loggerDest == null) || loggerDest.equals("")) {
+									loggerDest = DEFAULT_RICHTEXT_LOG_FILENAME;
 								}
-								loggers.put(loggerName, createLogger(loggerName, Logger.RICH_TEXT_FILE, loggerFileName));
+								loggers.put(loggerName, createLogger(loggerName, Logger.RICH_TEXT_FILE, loggerDest));
 
-							} else if (loggerType.equals("SCREEN")) {
-								loggers.put(loggerName, createLogger(loggerName, Logger.SCREEN, loggerFileName));
+							} else if (loggerType.equals(Logger.SCREEN)) {
+								loggers.put(loggerName, createLogger(loggerName, Logger.SCREEN, loggerDest));
+
+							} else if (loggerType.equals(Logger.EVENT_LOG)) {
+								if ((loggerDest != null) && !loggerDest.equals("")) {
+									loggers.put(loggerName, createLogger(loggerName, Logger.EVENT_LOG, loggerDest));
+								}
+
 							}
 						}
 					}
@@ -121,7 +128,7 @@ public class LoggerFactory {
 				if (!name.equals("DEFAULT")) {
 					return getLogger("DEFAULT");
 				} else {
-					return null;
+					return GOD_LOGGER;
 				}
 			}
 		} else {
@@ -144,21 +151,24 @@ public class LoggerFactory {
 		load(DEFAULT_PROPERTIES_FILENAME);
 	}
 
-	private static Logger createLogger(String name, int type, String fileName) {
+	private static Logger createLogger(String name, String type, String destination) {
 
 		Logger out = null;
 
-		if (type == Logger.CONSOLE) {
-			out = new ConsoleLogger();
+		if (type.trim().equalsIgnoreCase(Logger.CONSOLE)) {
+			out = new ConsoleLogger(name, type, destination);
 
-		} else if (type == Logger.TEXT_FILE) {
-			out = new TextFileLogger(fileName);
+		} else if (type.trim().equalsIgnoreCase(Logger.TEXT_FILE)) {
+			out = new TextFileLogger(name, type, destination);
 
-		} else if (type == Logger.RICH_TEXT_FILE) {
-			out = new RichTextFileLogger(fileName);
+		} else if (type.trim().equalsIgnoreCase(Logger.RICH_TEXT_FILE)) {
+			out = new RichTextFileLogger(name, type, destination);
 
-		} else if (type == Logger.SCREEN) {
-			out = new ScreenLogger(name);
+		} else if (type.trim().equalsIgnoreCase(Logger.SCREEN)) {
+			out = new ScreenLogger(name, type, destination);
+
+		} else if (type.trim().equalsIgnoreCase(Logger.EVENT_LOG)) {
+			out = new EventLogger(name, type, destination);
 		}
 
 		return out;

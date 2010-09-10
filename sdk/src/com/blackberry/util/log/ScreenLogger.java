@@ -1,30 +1,50 @@
+/**
+ * Copyright (c) E.Y. Baskoro, Research In Motion Limited.
+ * 
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without 
+ * restriction, including without limitation the rights to use, 
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following 
+ * conditions:
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+ * OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * This License shall be included in all copies or substantial 
+ * portions of the Software.
+ * 
+ * The name(s) of the above copyright holders shall not be used 
+ * in advertising or otherwise to promote the sale, use or other 
+ * dealings in this Software without prior written authorization.
+ * 
+ */
 package com.blackberry.util.log;
-
-import java.util.Date;
 
 import net.rim.device.api.ui.Color;
 import net.rim.device.api.ui.Font;
 import net.rim.device.api.ui.FontFamily;
 import net.rim.device.api.ui.Graphics;
-import net.rim.device.api.ui.Manager;
-import net.rim.device.api.ui.component.LabelField;
-import net.rim.device.api.ui.container.MainScreen;
-import net.rim.device.api.ui.container.VerticalFieldManager;
 
 public class ScreenLogger extends AbstractLogger {
 
-	protected MainScreen screen;
-	protected VerticalFieldManager vfm;
+	protected LogScreen screen;
 
-	protected ScreenLogger(String name) {
-		screen = new MainScreen(Manager.VERTICAL_SCROLL | Manager.VERTICAL_SCROLLBAR | Manager.HORIZONTAL_SCROLLBAR | Manager.HORIZONTAL_SCROLLBAR);
-		vfm = new VerticalFieldManager(VerticalFieldManager.VERTICAL_SCROLL | VerticalFieldManager.VERTICAL_SCROLLBAR | VerticalFieldManager.HORIZONTAL_SCROLLBAR | VerticalFieldManager.HORIZONTAL_SCROLLBAR);
-		screen.add(vfm);
-		screen.setTitle("Log Screen: " + name);
+	public ScreenLogger(String pName, String pType, String pDestination) {
+		super(pName, pType, pDestination);
+		screen = new LogScreen(pName);
 	}
 
-	protected void writeScreen(String message, final int fg, final int bg, final boolean bold) {
-		final LabelField label = new LabelField(message, LabelField.USE_ALL_WIDTH | LabelField.FIELD_LEFT | LabelField.FOCUSABLE) {
+	protected void writeScreen(int level, String message, final int fg, final int bg, final boolean bold) {
+		final LogEntryField label = new LogEntryField(message, level) {
 			public void paint(Graphics g) {
 				try {
 					if (bold) {
@@ -42,41 +62,44 @@ public class ScreenLogger extends AbstractLogger {
 				super.paint(g);
 			}
 		};
-		vfm.add(label);
+		screen.addLog(label);
 	}
 
 	public void debug(String message) {
-		message = "[DEBUG] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeScreen(message, Color.BLACK, Color.WHITE, false);
+		writeScreen(LogLevel.DEBUG, formatDebug(message), Color.BLACK, Color.WHITE, false);
 	}
 
 	public void info(String message) {
-		message = "[INFO] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeScreen(message, Color.GREEN, Color.WHITE, true);
+		writeScreen(LogLevel.INFO, formatInfo(message), Color.GREEN, Color.WHITE, true);
 	}
 
 	public void warn(String message) {
-		message = "[WARN] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeScreen(message, Color.ORANGE, Color.WHITE, true);
+		writeScreen(LogLevel.WARN, formatWarn(message), Color.ORANGE, Color.WHITE, true);
 	}
 
 	public void error(String message) {
-		message = "[ERROR] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeScreen(message, Color.RED, Color.WHITE, true);
+		writeScreen(LogLevel.ERROR, formatError(message), Color.RED, Color.WHITE, true);
 	}
 
 	public void fatal(String message) {
-		message = "[FATAL] " + simpleDateFormat.format(new Date()) + ": " + message;
-		writeScreen(message, Color.RED, Color.BLACK, true);
+		writeScreen(LogLevel.FATAL, formatFatal(message), Color.RED, Color.BLACK, true);
 	}
 
 	public void close() {
+		if (screen != null) {
+			screen.clearAll();
+		}
 		screen = null;
-		vfm = null;
 	}
 
-	public MainScreen getLogScreen() {
+	public LogScreen getLogScreen() {
 		return screen;
+	}
+
+	public void clearLog() {
+		if (screen != null) {
+			screen.clearAll();
+		}
 	}
 
 }
