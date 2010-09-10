@@ -58,7 +58,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	private final String APPLICATION_KEY = "f21032d377681e02051e639830b4b678"; // Your Facebook Application Key. 
 	private final String APPLICATION_SECRET = "590906fcfea8e348589cf43f06192c2e"; // Your Facebook Application Secret.
 	private final String APPLICATION_ID = "317175255300"; // Your Facebook Application ID.
-	private final long persistentObjectId = 0xed5edecbc209760eL; // com.blackberry.facebook.samples.strawberry.StrawBerry
+	private final long persistentObjectId = 0x854d1b7fa43e3577L; // com.blackberry.facebook.samples.strawberry.StrawBerry
 
 	private PersistentObject store;
 	private HttpConnectionFactory connFactory;
@@ -166,8 +166,8 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	private void testLog() {
 
 		Logger def = LoggerFactory.getLogger();
-		Logger log = LoggerFactory.getLogger("TEXT");
-		Logger rlog = LoggerFactory.getLogger("RICHTEXT");
+		Logger log = LoggerFactory.getLogger("TEXT_FILE");
+		Logger rlog = LoggerFactory.getLogger("RICH_TEXT_FILE");
 
 		def.debug("************************** StrawBerry.def.xxx() **********************************");
 		def.debug("This is just a testing log message.");
