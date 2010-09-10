@@ -149,7 +149,7 @@ public class HttpConnectionFactory implements RichTextLoggable {
 
 	private int nextTransport(int curIndex) throws HttpConnectionFactoryException {
 		if ((curIndex >= 0) && (curIndex < transports.length - 1)) {
-			return curIndex++;
+			return curIndex + 1;
 		} else {
 			throw new HttpConnectionFactoryException("No more transport available.");
 		}
@@ -164,7 +164,7 @@ public class HttpConnectionFactory implements RichTextLoggable {
 		switch (transports[tIndex]) {
 		case TRANSPORT_SIM:
 			try {
-				con = getSimConnection(pURL, true);
+				con = getSimConnection(pURL, false);
 			} catch (IOException e) {
 				log.debug(e.getMessage());
 			} finally {
