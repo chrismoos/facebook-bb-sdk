@@ -30,9 +30,6 @@
 
 package com.blackberry.util.log.test;
 
-import com.blackberry.util.log.Logger;
-import com.blackberry.util.log.LoggerFactory;
-
 import net.rim.device.api.applicationcontrol.ApplicationPermissions;
 import net.rim.device.api.applicationcontrol.ApplicationPermissionsManager;
 import net.rim.device.api.ui.UiApplication;
@@ -46,12 +43,10 @@ public class BasicLogTest extends UiApplication {
 
 	public BasicLogTest() {
 		checkPermissions();
-		init();
 		pushScreen(new BasicLogTestScreen());
 	}
 
 	private void checkPermissions() {
-
 		ApplicationPermissionsManager apm = ApplicationPermissionsManager.getInstance();
 		ApplicationPermissions original = apm.getApplicationPermissions();
 
@@ -76,42 +71,7 @@ public class BasicLogTest extends UiApplication {
 		}
 	}
 
-	private void init() {
-	}
-
-	private void testLog() {
-
-		Logger def = LoggerFactory.getLogger();
-		Logger log = LoggerFactory.getLogger("TEXT_FILE");
-		Logger rlog = LoggerFactory.getLogger("RICH_TEXT_FILE");
-
-		def.debug("************************** BasicLogTest.def.xxx() **********************************");
-		def.debug("This is just a testing log message.");
-		def.info("This is just a testing log message.");
-		def.warn("This is just a testing log message.");
-		def.error("This is just a testing log message.");
-		def.fatal("This is just a testing log message.");
-		def.debug("************************** /BasicLogTest.def.xxx() **********************************");
-
-		log.debug("************************** BasicLogTest.log.xxx() **********************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("************************** /BasicLogTest.log.xxx() **********************************");
-
-		rlog.debug("************************** BasicLogTest.rlog.xxx() **********************************");
-		rlog.debug("This is just a testing log message.");
-		rlog.info("This is just a testing log message.");
-		rlog.warn("This is just a testing log message.");
-		rlog.error("This is just a testing log message.");
-		rlog.fatal("This is just a testing log message.");
-		rlog.debug("************************** /BasicLogTest.rlog.xxx() **********************************");
-	}
-
 	private void exit() {
-		LoggerFactory.clear();
 		System.exit(0);
 	}
 

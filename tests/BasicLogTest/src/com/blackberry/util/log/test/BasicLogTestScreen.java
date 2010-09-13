@@ -32,10 +32,9 @@ package com.blackberry.util.log.test;
 import javax.microedition.content.Invocation;
 import javax.microedition.content.Registry;
 
+import com.blackberry.util.log.LogScreen;
 import com.blackberry.util.log.Logger;
 import com.blackberry.util.log.LoggerFactory;
-import com.blackberry.util.log.ScreenLogger;
-
 import net.rim.device.api.system.EventLogger;
 import net.rim.device.api.ui.Manager;
 import net.rim.device.api.ui.UiApplication;
@@ -48,12 +47,14 @@ import net.rim.device.api.ui.container.VerticalFieldManager;
 
 public class BasicLogTestScreen extends MainScreen {
 
-	protected Logger consoleLogger = LoggerFactory.getLogger("CONSOLE");
-	protected Logger textFileLogger = LoggerFactory.getLogger("TEXT_FILE");
-	protected Logger richTextFileLogger = LoggerFactory.getLogger("RICH_TEXT_FILE");
-	protected Logger screenLogger = LoggerFactory.getLogger("SCREEN");
-	protected Logger eventLogger = LoggerFactory.getLogger("EVENT_LOG");
-	protected Logger defaultLogger = LoggerFactory.getLogger();
+	protected Logger c = Logger.getLogger("C");
+	protected Logger t = Logger.getLogger("T");
+	protected Logger r = Logger.getLogger("R");
+	protected Logger s = Logger.getLogger("S");
+	protected Logger e = Logger.getLogger("E");
+
+	protected Logger classLogger = Logger.getLogger(getClass());
+	protected Logger rootLogger = Logger.getLogger("jhgsjhfgdhh343234543jfhkdg76854ghyj");
 
 	public BasicLogTestScreen() {
 
@@ -67,56 +68,58 @@ public class BasicLogTestScreen extends MainScreen {
 		HorizontalFieldManager hfm4 = new HorizontalFieldManager();
 		HorizontalFieldManager hfm5 = new HorizontalFieldManager();
 		HorizontalFieldManager hfm6 = new HorizontalFieldManager();
+		HorizontalFieldManager hfm7 = new HorizontalFieldManager();
 
 		hfm1.add(new ButtonField("Log to Console") {
 			protected boolean invokeAction(int action) {
-				doLog(consoleLogger);
-				Dialog.inform("Written to: [Console]");
+				doLog(c);
+				Dialog.inform("Written to: " + c.getName());
 				return true;
 			}
 		});
 
 		hfm2.add(new ButtonField("Log to Text File") {
 			protected boolean invokeAction(int action) {
-				doLog(textFileLogger);
-				if (Dialog.ask("Written to: " + textFileLogger.getDestination() + "\n" + "Open Now?:", new String[] { "Yup", "Nope" }, 0) == 0) {
-					openFile(textFileLogger.getDestination());
-				}
+				doLog(t);
+				Dialog.inform("Written to: " + t.getName());
 				return true;
 			}
 		});
 
 		hfm2.add(new ButtonField("Clear") {
 			protected boolean invokeAction(int action) {
-				doClear(textFileLogger);
-				Dialog.inform("Cleared: " + textFileLogger.getDestination());
+				doClear(t);
+				Dialog.inform("Cleared: " + t.getName());
 				return true;
 			}
 		});
 
 		hfm3.add(new ButtonField("Log to RichText File") {
 			protected boolean invokeAction(int action) {
-				doLog(richTextFileLogger);
-				if (Dialog.ask("Written to: " + richTextFileLogger.getDestination() + "\n" + "Open Now?:", new String[] { "Yup", "Nope" }, 0) == 0) {
-					openFile(richTextFileLogger.getDestination());
-				}
+				doLog(r);
+				Dialog.inform("Written to: " + r.getName());
 				return true;
 			}
 		});
 
 		hfm3.add(new ButtonField("Clear") {
 			protected boolean invokeAction(int action) {
-				doClear(richTextFileLogger);
-				Dialog.inform("Cleared: " + richTextFileLogger.getDestination());
+				doClear(r);
+				Dialog.inform("Cleared: " + r.getName());
 				return true;
 			}
 		});
 
 		hfm4.add(new ButtonField("Log to Screen") {
 			protected boolean invokeAction(int action) {
-				doLog(screenLogger);
-				if (Dialog.ask("Written to: [Log Screen]" + "\n" + "Open Now?:", new String[] { "Yup", "Nope" }, 0) == 0) {
-					UiApplication.getUiApplication().pushScreen(((ScreenLogger) screenLogger).getLogScreen());
+				doLog(s);
+				if (Dialog.ask("Written to: [Log Screen]" + "\n" + "Open Now?:", new String[] { "Yes", "No" }, 0) == 0) {
+					LogScreen[] screens = s.getLogScreens();
+					if ((screens != null) && (screens.length > 0)) {
+						for (int i = 0; i < screens.length; i++) {
+							UiApplication.getUiApplication().pushScreen(screens[i]);
+						}
+					}
 				}
 				return true;
 			}
@@ -124,7 +127,7 @@ public class BasicLogTestScreen extends MainScreen {
 
 		hfm4.add(new ButtonField("Clear") {
 			protected boolean invokeAction(int action) {
-				doClear(screenLogger);
+				doClear(s);
 				Dialog.inform("Cleared: [Log Screen]");
 				return true;
 			}
@@ -132,8 +135,8 @@ public class BasicLogTestScreen extends MainScreen {
 
 		hfm5.add(new ButtonField("Log to EventLog") {
 			protected boolean invokeAction(int action) {
-				doLog(eventLogger);
-				if (Dialog.ask("Written to: [Event Log]" + "\n" + "Open Now?:", new String[] { "Yup", "Nope" }, 0) == 0) {
+				doLog(e);
+				if (Dialog.ask("Written to: [Event Log]" + "\n" + "Open Now?:", new String[] { "Yes", "No" }, 0) == 0) {
 					EventLogger.startEventLogViewer();
 				}
 				return true;
@@ -142,24 +145,40 @@ public class BasicLogTestScreen extends MainScreen {
 
 		hfm5.add(new ButtonField("Clear") {
 			protected boolean invokeAction(int action) {
-				doClear(eventLogger);
+				doClear(e);
 				Dialog.inform("Cleared: [Event Log]");
 				return true;
 			}
 		});
 
-		hfm6.add(new ButtonField("Log to Default Logger") {
+		hfm6.add(new ButtonField("Log to Class Logger") {
 			protected boolean invokeAction(int action) {
-				doLog(defaultLogger);
-				Dialog.inform("Written to: [Default Logger]");
+				doLog(classLogger);
+				Dialog.inform("Written to: " + classLogger.getName());
 				return true;
 			}
 		});
 
 		hfm6.add(new ButtonField("Clear") {
 			protected boolean invokeAction(int action) {
-				doClear(defaultLogger);
-				Dialog.inform("Cleared: [Default Logger]");
+				doClear(classLogger);
+				Dialog.inform("Cleared: " + classLogger.getName());
+				return true;
+			}
+		});
+
+		hfm7.add(new ButtonField("Log to Root Logger") {
+			protected boolean invokeAction(int action) {
+				doLog(rootLogger);
+				Dialog.inform("Written to: " + rootLogger.getName());
+				return true;
+			}
+		});
+
+		hfm7.add(new ButtonField("Clear") {
+			protected boolean invokeAction(int action) {
+				doClear(rootLogger);
+				Dialog.inform("Cleared: " + rootLogger.getName());
 				return true;
 			}
 		});
@@ -180,6 +199,9 @@ public class BasicLogTestScreen extends MainScreen {
 		topManager.add(new SeparatorField());
 
 		topManager.add(hfm6);
+		topManager.add(new SeparatorField());
+
+		topManager.add(hfm7);
 		topManager.add(new SeparatorField());
 
 		add(topManager);
@@ -220,7 +242,7 @@ public class BasicLogTestScreen extends MainScreen {
 	}
 
 	protected void doClear(Logger log) {
-		log.clearLog();
+		log.clear();
 	}
 
 	protected void openFile(String fileName) {
