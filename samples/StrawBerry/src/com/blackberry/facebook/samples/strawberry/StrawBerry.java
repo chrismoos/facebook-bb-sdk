@@ -37,8 +37,7 @@ import com.blackberry.facebook.ui.Action;
 import com.blackberry.facebook.ui.ActionListener;
 import com.blackberry.facebook.ui.LoginScreen;
 import com.blackberry.facebook.ui.PermissionScreen;
-import com.blackberry.util.log.Logger;
-import com.blackberry.util.log.LoggerFactory;
+import com.blackberry.util.log.AppenderFactory;
 import com.blackberry.util.network.CookieManager;
 import com.blackberry.util.network.HttpConnectionFactory;
 
@@ -113,8 +112,6 @@ public class StrawBerry extends UiApplication implements ActionListener {
 			pushScreen(loginScreen);
 		}
 
-		testLog();
-
 	}
 
 	private void checkPermissions() {
@@ -163,37 +160,6 @@ public class StrawBerry extends UiApplication implements ActionListener {
 		}
 	}
 
-	private void testLog() {
-
-		Logger def = LoggerFactory.getLogger();
-		Logger log = LoggerFactory.getLogger("TEXT_FILE");
-		Logger rlog = LoggerFactory.getLogger("RICH_TEXT_FILE");
-
-		def.debug("************************** StrawBerry.def.xxx() **********************************");
-		def.debug("This is just a testing log message.");
-		def.info("This is just a testing log message.");
-		def.warn("This is just a testing log message.");
-		def.error("This is just a testing log message.");
-		def.fatal("This is just a testing log message.");
-		def.debug("************************** /StrawBerry.def.xxx() **********************************");
-
-		log.debug("************************** StrawBerry.log.xxx() **********************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("************************** /StrawBerry.log.xxx() **********************************");
-
-		rlog.debug("************************** StrawBerry.rlog.xxx() **********************************");
-		rlog.debug("This is just a testing log message.");
-		rlog.info("This is just a testing log message.");
-		rlog.warn("This is just a testing log message.");
-		rlog.error("This is just a testing log message.");
-		rlog.fatal("This is just a testing log message.");
-		rlog.debug("************************** /StrawBerry.rlog.xxx() **********************************");
-	}
-
 	private void saveSettings(ApplicationSettings settings) {
 		synchronized (store) {
 			store.setContents(settings);
@@ -212,7 +178,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	}
 
 	private void exit() {
-		LoggerFactory.clear();
+		AppenderFactory.clear();
 		System.exit(0);
 	}
 

@@ -31,12 +31,12 @@ package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
 
-final class UploadPhotoScreen extends FacebookScreen implements RichTextLoggable {
+final class UploadPhotoScreen extends FacebookScreen {
 
 	// List of actions:
 	static final String ACTION_ENTER = "uploadPhoto";
@@ -45,6 +45,8 @@ final class UploadPhotoScreen extends FacebookScreen implements RichTextLoggable
 
 	// List of labels:
 	private static final String LABEL_TITLE = "Upload Photo";
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * Default constructor.

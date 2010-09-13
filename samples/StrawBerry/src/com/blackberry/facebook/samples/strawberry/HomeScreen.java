@@ -31,7 +31,7 @@ package com.blackberry.facebook.samples.strawberry;
 
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.util.log.Loggable;
+import com.blackberry.util.log.Logger;
 
 import net.rim.device.api.ui.Manager;
 import net.rim.device.api.ui.component.ButtonField;
@@ -40,7 +40,7 @@ import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.SeparatorField;
 import net.rim.device.api.ui.container.VerticalFieldManager;
 
-final class HomeScreen extends FacebookScreen implements Loggable {
+final class HomeScreen extends FacebookScreen {
 
 	// List of labels:
 	private static final String LABEL_TITLE = "StrawBerry";
@@ -59,6 +59,8 @@ final class HomeScreen extends FacebookScreen implements Loggable {
 	private ButtonField pokeButton;
 	private ButtonField wallButton;
 	private ButtonField sendMessageButton;
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * Default constructor.
@@ -131,33 +133,14 @@ final class HomeScreen extends FacebookScreen implements Loggable {
 		topManager.add(sendMessageButton);
 
 		add(new SeparatorField());
-
-		testLog();
-	}
-
-	private void testLog() {
-
-		console.debug("************************** HomeScreen.console.xxx() **********************************");
-		console.debug("This is just a testing log message.");
-		console.info("This is just a testing log message.");
-		console.warn("This is just a testing log message.");
-		console.error("This is just a testing log message.");
-		console.fatal("This is just a testing log message.");
-		console.debug("************************** /HomeScreen.console.xxx() **********************************");
-
-		log.debug("************************** HomeScreen.log.xxx() **********************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("************************** /HomeScreen.log.xxx() **********************************");
 	}
 
 	public boolean onClose() {
 		if (Dialog.ask("Please choose:", new String[] { "Exit", "Logout & Exit" }, 0) == 0) {
+			log.info("User Exit.");
 			((StrawBerry) getApplication()).saveAndExit();
 		} else {
+			log.info("User Logout & Exit.");
 			((StrawBerry) getApplication()).logoutAndExit();
 		}
 		return true;
