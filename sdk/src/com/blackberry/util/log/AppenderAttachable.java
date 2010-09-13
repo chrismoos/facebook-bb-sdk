@@ -29,20 +29,16 @@
  */
 package com.blackberry.util.log;
 
-public class LogLevel {
+public interface AppenderAttachable {
 
-	public static final int DEBUG = 0;
-	public static final int INFO = 1;
-	public static final int WARN = 2;
-	public static final int ERROR = 3;
-	public static final int FATAL = 4;
+	public void debug(String message);
 
-	public static boolean isGreaterOrEqual(int level1, int level2) {
-		return level1 >= level2;
-	}
+	public void info(String message);
 
-	public static boolean isGreater(int level1, int level2) {
-		return level1 > level2;
-	}
+	public void warn(String message);
+
+	public void error(String message);
+
+	public void fatal(String message);
 
 }

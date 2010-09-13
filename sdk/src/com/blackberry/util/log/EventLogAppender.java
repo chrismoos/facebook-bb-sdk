@@ -29,77 +29,53 @@
  */
 package com.blackberry.util.log;
 
-import net.rim.device.api.ui.Color;
-import net.rim.device.api.ui.Font;
-import net.rim.device.api.ui.FontFamily;
-import net.rim.device.api.ui.Graphics;
+import net.rim.device.api.util.StringUtilities;
 
-public class ScreenLogger extends AbstractLogger {
+public class EventLogAppender extends AbstractAppender {
 
-	protected LogScreen screen;
+	protected long guid;
 
-	public ScreenLogger(String pName, String pType, String pDestination) {
+	public EventLogAppender(String pName, String pType, String pDestination) {
 		super(pName, pType, pDestination);
-		screen = new LogScreen(pName);
-	}
-
-	protected void writeScreen(int level, String message, final int fg, final int bg, final boolean bold) {
-		final LogEntryField label = new LogEntryField(message, level) {
-			public void paint(Graphics g) {
-				try {
-					if (bold) {
-						setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.BOLD, 12));
-					} else {
-						setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.PLAIN, 12));
-					}
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				g.setBackgroundColor(bg);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				g.setColor(fg);
-				g.clear();
-				super.paint(g);
-			}
-		};
-		screen.addLog(label);
-	}
-
-	public void debug(String message) {
-		writeScreen(LogLevel.DEBUG, formatDebug(message), Color.BLACK, Color.WHITE, false);
-	}
-
-	public void info(String message) {
-		writeScreen(LogLevel.INFO, formatInfo(message), Color.GREEN, Color.WHITE, true);
-	}
-
-	public void warn(String message) {
-		writeScreen(LogLevel.WARN, formatWarn(message), Color.ORANGE, Color.WHITE, true);
-	}
-
-	public void error(String message) {
-		writeScreen(LogLevel.ERROR, formatError(message), Color.RED, Color.WHITE, true);
-	}
-
-	public void fatal(String message) {
-		writeScreen(LogLevel.FATAL, formatFatal(message), Color.RED, Color.BLACK, true);
+		guid = StringUtilities.stringHashToLong(pDestination);
+		net.rim.device.api.system.EventLogger.register(guid, pDestination, net.rim.device.api.system.EventLogger.VIEWER_STRING);
 	}
 
 	public void close() {
-		if (screen != null) {
-			screen.clearAll();
-		}
-		screen = null;
 	}
 
-	public LogScreen getLogScreen() {
-		return screen;
+	public void debug(String message) {
+		if ((message != null) && !message.equals("")) {
+			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.DEBUG_INFO);
+		}
 	}
 
-	public void clearLog() {
-		if (screen != null) {
-			screen.clearAll();
+	public void info(String message) {
+		if ((message != null) && !message.equals("")) {
+			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.INFORMATION);
 		}
+	}
+
+	public void warn(String message) {
+		if ((message != null) && !message.equals("")) {
+			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.WARNING);
+		}
+	}
+
+	public void error(String message) {
+		if ((message != null) && !message.equals("")) {
+			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.ERROR);
+		}
+	}
+
+	public void fatal(String message) {
+		if ((message != null) && !message.equals("")) {
+			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.SEVERE_ERROR);
+		}
+	}
+
+	public void clear() {
+		net.rim.device.api.system.EventLogger.clearLog();
 	}
 
 }

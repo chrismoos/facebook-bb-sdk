@@ -60,10 +60,10 @@ public class Properties {
 		for (int i = 0; i < lines.length; i++) {
 			String[] kv = StringUtils.split(StringUtils.chomp(lines[i]), '=', 2);
 			if (kv.length == 1) {
-				result.setProperty(kv[0], "");
+				result.setProperty(kv[0].trim(), "");
 			}
 			if (kv.length == 2) {
-				result.setProperty(kv[0], kv[1]);
+				result.setProperty(kv[0].trim(), kv[1].trim());
 			}
 		}
 

@@ -38,12 +38,11 @@ import com.blackberry.util.string.StringUtils;
 
 public class LoggerFactory {
 
-	private static final String DEFAULT_TEXT_LOG_FILENAME = "file:///SDCard/log.txt";
-	private static final String DEFAULT_RICHTEXT_LOG_FILENAME = "file:///SDCard/log.html";
-	private static final String DEFAULT_PROPERTIES_FILENAME = "log.properties";
+	private static final String DEFAULT_PROPERTIES_FILENAME = "log4b.properties";
+	private static final String LOGGER_PREFFIX = "log4b.logger.";
 
 	private static Hashtable loggers = new Hashtable();
-	private static final Logger GOD_LOGGER = createLogger("", Logger.CONSOLE, null);
+	private static Logger ROOT_LOGGER = createLogger("ROOT", "DEBUG", new Appender[] { AppenderFactory.getRootAppender() });
 
 	static {
 		load(DEFAULT_PROPERTIES_FILENAME);
@@ -51,6 +50,7 @@ public class LoggerFactory {
 
 	public static void load(String propFile) {
 		try {
+			AppenderFactory.load(propFile);
 			Properties prop = Properties.loadProperties("/" + propFile);
 			Enumeration enum = prop.getEnumeratedNames();
 
@@ -59,50 +59,25 @@ public class LoggerFactory {
 				String value = null;
 				String[] values = null;
 				String loggerName = null;
-				String loggerType = null;
-				String loggerDest = null;
+				String loggerLevel = null;
 
 				key = ((String) enum.nextElement());
 
-				if ((key != null) && !key.equals("")) {
-					loggerName = key.trim();
+				if ((key != null) && !key.equals("") && key.startsWith(LOGGER_PREFFIX)) {
+					key = key.trim();
+					loggerName = key.substring(LOGGER_PREFFIX.length());
 					value = prop.getProperty(key);
 					if ((value != null) && !value.equals("")) {
 						values = StringUtils.split(value, ',', 0);
-						if ((values != null) && (values.length > 0)) {
-							for (int i = 0; i < values.length; i++) {
-								if (i == 0) {
-									loggerType = values[i].trim();
-								} else if (i == 1) {
-									loggerDest = values[i].trim();
-								}
+						if ((values != null) && (values.length > 1)) {
+							loggerLevel = values[0].trim();
+							Appender[] appenderList = new Appender[values.length - 1];
+
+							for (int i = 1; i < values.length; i++) {
+								appenderList[i - 1] = AppenderFactory.getAppender(values[i].trim());
 							}
 
-							// create logger for this line
-							if (loggerType.equals(Logger.CONSOLE)) {
-								loggers.put(loggerName, createLogger(loggerName, Logger.CONSOLE, loggerDest));
-
-							} else if (loggerType.equals(Logger.TEXT_FILE)) {
-								if ((loggerDest == null) || loggerDest.equals("")) {
-									loggerDest = DEFAULT_TEXT_LOG_FILENAME;
-								}
-								loggers.put(loggerName, createLogger(loggerName, Logger.TEXT_FILE, loggerDest));
-
-							} else if (loggerType.equals(Logger.RICH_TEXT_FILE)) {
-								if ((loggerDest == null) || loggerDest.equals("")) {
-									loggerDest = DEFAULT_RICHTEXT_LOG_FILENAME;
-								}
-								loggers.put(loggerName, createLogger(loggerName, Logger.RICH_TEXT_FILE, loggerDest));
-
-							} else if (loggerType.equals(Logger.SCREEN)) {
-								loggers.put(loggerName, createLogger(loggerName, Logger.SCREEN, loggerDest));
-
-							} else if (loggerType.equals(Logger.EVENT_LOG)) {
-								if ((loggerDest != null) && !loggerDest.equals("")) {
-									loggers.put(loggerName, createLogger(loggerName, Logger.EVENT_LOG, loggerDest));
-								}
-
-							}
+							loggers.put(loggerName, createLogger(loggerName, loggerLevel, appenderList));
 						}
 					}
 				}
@@ -116,8 +91,8 @@ public class LoggerFactory {
 		}
 	}
 
-	public static Logger getLogger() {
-		return getLogger("DEFAULT");
+	public static Logger getRootLogger() {
+		return ROOT_LOGGER;
 	}
 
 	public static Logger getLogger(String name) {
@@ -125,10 +100,15 @@ public class LoggerFactory {
 			if (loggers.containsKey(name)) {
 				return (Logger) loggers.get(name);
 			} else {
-				if (!name.equals("DEFAULT")) {
-					return getLogger("DEFAULT");
+				String parentName = StringUtils.parentOf(name);
+				if ((parentName != null) && !parentName.equals("")) {
+					return getLogger(parentName);
 				} else {
-					return GOD_LOGGER;
+					if (!name.equals("ROOT")) {
+						return getLogger("ROOT");
+					} else {
+						return ROOT_LOGGER;
+					}
 				}
 			}
 		} else {
@@ -137,12 +117,7 @@ public class LoggerFactory {
 	}
 
 	public static void clear() {
-		Enumeration enum = loggers.elements();
-		if (enum != null) {
-			while (enum.hasMoreElements()) {
-				((Logger) enum.nextElement()).close();
-			}
-		}
+		AppenderFactory.clear();
 		loggers = new Hashtable();
 	}
 
@@ -151,24 +126,24 @@ public class LoggerFactory {
 		load(DEFAULT_PROPERTIES_FILENAME);
 	}
 
-	private static Logger createLogger(String name, String type, String destination) {
+	protected static Logger createLogger(String pName, String pLevel, Appender[] pAppenders) {
 
 		Logger out = null;
 
-		if (type.trim().equalsIgnoreCase(Logger.CONSOLE)) {
-			out = new ConsoleLogger(name, type, destination);
-
-		} else if (type.trim().equalsIgnoreCase(Logger.TEXT_FILE)) {
-			out = new TextFileLogger(name, type, destination);
-
-		} else if (type.trim().equalsIgnoreCase(Logger.RICH_TEXT_FILE)) {
-			out = new RichTextFileLogger(name, type, destination);
-
-		} else if (type.trim().equalsIgnoreCase(Logger.SCREEN)) {
-			out = new ScreenLogger(name, type, destination);
-
-		} else if (type.trim().equalsIgnoreCase(Logger.EVENT_LOG)) {
-			out = new EventLogger(name, type, destination);
+		if ((pName != null) && !pName.equals("") && (pLevel != null) && !pLevel.equals("") && (pAppenders != null) && (pAppenders.length > 0)) {
+			if (pLevel.trim().equalsIgnoreCase("DEBUG")) {
+				out = new Logger(pName.trim(), Level.DEBUG, pAppenders);
+			} else if (pLevel.trim().equalsIgnoreCase("INFO")) {
+				out = new Logger(pName.trim(), Level.INFO, pAppenders);
+			} else if (pLevel.trim().equalsIgnoreCase("WARN")) {
+				out = new Logger(pName.trim(), Level.WARN, pAppenders);
+			} else if (pLevel.trim().equalsIgnoreCase("ERROR")) {
+				out = new Logger(pName.trim(), Level.ERROR, pAppenders);
+			} else if (pLevel.trim().equalsIgnoreCase("FATAL")) {
+				out = new Logger(pName.trim(), Level.FATAL, pAppenders);
+			} else {
+				// do nothing
+			}
 		}
 
 		return out;

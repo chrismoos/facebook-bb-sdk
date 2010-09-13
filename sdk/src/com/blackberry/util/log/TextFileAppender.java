@@ -34,13 +34,13 @@ import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
-public class TextFileLogger extends AbstractLogger {
+public class TextFileAppender extends AbstractAppender {
 
 	protected String logFile = null;
 	protected FileConnection fc = null;
 	protected OutputStream os = null;
 
-	public TextFileLogger(String pName, String pType, String pDestination) {
+	public TextFileAppender(String pName, String pType, String pDestination) {
 		super(pName, pType, pDestination);
 		logFile = pDestination;
 	}
@@ -76,7 +76,7 @@ public class TextFileLogger extends AbstractLogger {
 		}
 	}
 
-	public void clearLog() {
+	public void clear() {
 		if (fc == null) {
 			try {
 				fc = (FileConnection) Connector.open(logFile, Connector.READ_WRITE);

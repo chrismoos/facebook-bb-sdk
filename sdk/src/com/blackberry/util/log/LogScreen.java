@@ -43,7 +43,7 @@ public class LogScreen extends MainScreen {
 
 	public LogScreen(String pName) {
 		logEntries = new Vector();
-		displayLevel = LogLevel.DEBUG;
+		displayLevel = Level.DEBUG;
 
 		setTitle("Log Screen: " + pName);
 		vfm = new VerticalFieldManager();
@@ -51,35 +51,35 @@ public class LogScreen extends MainScreen {
 
 		addMenuItem(new MenuItem(">= DEBUG", 200000, 10) {
 			public void run() {
-				setDisplayLevel(LogLevel.DEBUG);
+				setDisplayLevel(Level.DEBUG);
 				refreshDisplay();
 			}
 		});
 
 		addMenuItem(new MenuItem(">= INFO", 200000, 10) {
 			public void run() {
-				setDisplayLevel(LogLevel.INFO);
+				setDisplayLevel(Level.INFO);
 				refreshDisplay();
 			}
 		});
 
 		addMenuItem(new MenuItem(">= WARN", 200000, 10) {
 			public void run() {
-				setDisplayLevel(LogLevel.WARN);
+				setDisplayLevel(Level.WARN);
 				refreshDisplay();
 			}
 		});
 
 		addMenuItem(new MenuItem(">= ERROR", 200000, 10) {
 			public void run() {
-				setDisplayLevel(LogLevel.ERROR);
+				setDisplayLevel(Level.ERROR);
 				refreshDisplay();
 			}
 		});
 
 		addMenuItem(new MenuItem(">= FATAL", 200000, 10) {
 			public void run() {
-				setDisplayLevel(LogLevel.FATAL);
+				setDisplayLevel(Level.FATAL);
 				refreshDisplay();
 			}
 		});
@@ -88,7 +88,7 @@ public class LogScreen extends MainScreen {
 
 	public void addLog(LogEntryField field) {
 		logEntries.addElement(field);
-		if (LogLevel.isGreaterOrEqual(field.getLogLevel(), displayLevel)) {
+		if (Level.isGreaterOrEqual(field.getLogLevel(), displayLevel)) {
 			vfm.add(field);
 		}
 	}
@@ -106,7 +106,7 @@ public class LogScreen extends MainScreen {
 		vfm.deleteAll();
 		for (int i = 0; i < logEntries.size(); i++) {
 			LogEntryField curr = (LogEntryField) logEntries.elementAt(i);
-			if (LogLevel.isGreaterOrEqual(curr.getLogLevel(), displayLevel)) {
+			if (Level.isGreaterOrEqual(curr.getLogLevel(), displayLevel)) {
 				vfm.add(curr);
 			}
 		}

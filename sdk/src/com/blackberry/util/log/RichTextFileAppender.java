@@ -29,9 +29,9 @@
  */
 package com.blackberry.util.log;
 
-public class RichTextFileLogger extends TextFileLogger {
+public class RichTextFileAppender extends TextFileAppender {
 
-	public RichTextFileLogger(String pName, String pType, String pDestination) {
+	public RichTextFileAppender(String pName, String pType, String pDestination) {
 		super(pName, pType, pDestination);
 	}
 

@@ -36,7 +36,7 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 
 import net.rim.device.api.io.http.HttpHeaders;
 import net.rim.device.api.io.http.HttpProtocolConstants;
@@ -47,7 +47,7 @@ import net.rim.device.api.system.CoverageInfo;
 import net.rim.device.api.system.DeviceInfo;
 import net.rim.device.api.system.WLANInfo;
 
-public class HttpConnectionFactory implements RichTextLoggable {
+public class HttpConnectionFactory {
 
 	public static final int TRANSPORT_WIFI = 1;
 	public static final int TRANSPORT_BES = 2;
@@ -70,6 +70,8 @@ public class HttpConnectionFactory implements RichTextLoggable {
 
 	private int transports[];
 	private int lastTransport = -1;
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	public HttpConnectionFactory() {
 		this(0);

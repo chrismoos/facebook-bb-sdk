@@ -29,32 +29,102 @@
  */
 package com.blackberry.util.log;
 
-public interface Logger {
+import java.util.Vector;
 
-	public static String CONSOLE = "CONSOLE";
-	public static String TEXT_FILE = "TEXT_FILE";
-	public static String RICH_TEXT_FILE = "RICH_TEXT_FILE";
-	public static String SCREEN = "SCREEN";
-	public static String EVENT_LOG = "EVENT_LOG";
+public class Logger extends AbstractLogger implements AppenderAttachable {
 
-	public void close();
+	public Logger(String pName, int pLevel, Appender[] pAppenders) {
+		super(pName, pLevel, pAppenders);
+	}
 
-	public void clearLog();
+	public static Logger getLogger(String name) {
+		return LoggerFactory.getLogger(name);
+	}
 
-	public String getName();
+	public static Logger getLogger(Class className) {
+		return LoggerFactory.getLogger(className.getName());
+	}
 
-	public String getType();
+	public static Logger getLogger(String name, LoggerFactory factory) {
+		return factory.getLogger(name);
+	}
 
-	public String getDestination();
+	public static Logger getRootLogger() {
+		return LoggerFactory.getRootLogger();
+	}
 
-	public void debug(String message);
+	public void debug(String message) {
+		if (Level.isGreaterOrEqual(Level.DEBUG, level)) {
+			invokeAppenders(Level.DEBUG, message);
+		}
+	}
 
-	public void info(String message);
+	public void info(String message) {
+		if (Level.isGreaterOrEqual(Level.INFO, level)) {
+			invokeAppenders(Level.INFO, message);
+		}
+	}
 
-	public void warn(String message);
+	public void warn(String message) {
+		if (Level.isGreaterOrEqual(Level.WARN, level)) {
+			invokeAppenders(Level.WARN, message);
+		}
+	}
 
-	public void error(String message);
+	public void error(String message) {
+		if (Level.isGreaterOrEqual(Level.ERROR, level)) {
+			invokeAppenders(Level.ERROR, message);
+		}
+	}
 
-	public void fatal(String message);
+	public void fatal(String message) {
+		if (Level.isGreaterOrEqual(Level.FATAL, level)) {
+			invokeAppenders(Level.FATAL, message);
+		}
+	}
+
+	public LogScreen[] getLogScreens() {
+
+		Vector output = new Vector();
+		LogScreen[] result = null;
+
+		for (int i = 0; i < appenders.length; i++) {
+			if ((appenders[i].getType() != null) && appenders[i].getType().trim().equals(Appender.SCREEN)) {
+				output.addElement(((ScreenAppender) appenders[i]).getLogScreen());
+			}
+		}
+
+		if ((output != null) && (output.size() > 0)) {
+			result = new LogScreen[output.size()];
+			output.copyInto(result);
+		}
+
+		return result;
+
+	}
+
+	public void clear() {
+		for (int i = 0; i < appenders.length; i++) {
+			appenders[i].clear();
+		}
+	}
+
+	protected void invokeAppenders(int pLevel, String pMessage) {
+		for (int i = 0; i < appenders.length; i++) {
+			if (pLevel == Level.DEBUG) {
+				appenders[i].debug(pMessage);
+			} else if (pLevel == Level.INFO) {
+				appenders[i].info(pMessage);
+			} else if (pLevel == Level.WARN) {
+				appenders[i].warn(pMessage);
+			} else if (pLevel == Level.ERROR) {
+				appenders[i].error(pMessage);
+			} else if (pLevel == Level.FATAL) {
+				appenders[i].fatal(pMessage);
+			} else {
+				// do nothing
+			}
+		}
+	}
 
 }

@@ -34,14 +34,16 @@ import java.util.Hashtable;
 
 import com.blackberry.facebook.json.JSONObject;
 import com.blackberry.facebook.json.JSONTokener;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 
-public class GraphContext implements Graph, RichTextLoggable {
+public class GraphContext implements Graph {
 
 	protected String providerUrl = null;
 	protected String accessToken = null;
 
 	protected FacebookContext fbc = null;
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	public GraphContext(FacebookContext pfbc) {
 		fbc = pfbc;

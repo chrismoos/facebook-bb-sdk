@@ -29,37 +29,23 @@
  */
 package com.blackberry.util.log;
 
-public class ConsoleLogger extends AbstractLogger {
+public class Level {
 
-	public ConsoleLogger(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
+	public static final int MIN_VALUE = 0;
+	public static final int MAX_VALUE = 4;
+
+	public static final int DEBUG = 0;
+	public static final int INFO = 1;
+	public static final int WARN = 2;
+	public static final int ERROR = 3;
+	public static final int FATAL = 4;
+
+	public static boolean isGreaterOrEqual(int level1, int level2) {
+		return level1 >= level2;
 	}
 
-	public void debug(String message) {
-		System.out.println(formatDebug(message));
-	}
-
-	public void info(String message) {
-		System.out.println(formatInfo(message));
-	}
-
-	public void warn(String message) {
-		System.out.println(formatWarn(message));
-	}
-
-	public void error(String message) {
-		System.out.println(formatError(message));
-
-	}
-
-	public void fatal(String message) {
-		System.out.println(formatFatal(message));
-	}
-
-	public void close() {
-	}
-
-	public void clearLog() {
+	public static boolean isGreater(int level1, int level2) {
+		return level1 > level2;
 	}
 
 }

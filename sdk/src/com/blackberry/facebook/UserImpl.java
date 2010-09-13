@@ -32,13 +32,15 @@ package com.blackberry.facebook;
 import com.blackberry.facebook.json.JSONArray;
 import com.blackberry.facebook.json.JSONException;
 import com.blackberry.facebook.json.JSONObject;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 
-public class UserImpl implements User, RichTextLoggable {
+public class UserImpl implements User {
 
 	private Graph graph = null;
 	private JSONObject jsonObject = null;
 	private String root = "me";
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * Create a user instance.

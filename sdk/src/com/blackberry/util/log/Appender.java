@@ -29,9 +29,32 @@
  */
 package com.blackberry.util.log;
 
-public interface RichTextLoggable {
+public interface Appender {
 
-	Logger console = LoggerFactory.getLogger("CONSOLE");
-	Logger log = LoggerFactory.getLogger("RICH_TEXT_FILE");
+	public static String CONSOLE = "CONSOLE";
+	public static String TEXT_FILE = "TEXT_FILE";
+	public static String RICH_TEXT_FILE = "RICH_TEXT_FILE";
+	public static String SCREEN = "SCREEN";
+	public static String EVENT_LOG = "EVENT_LOG";
+
+	public void close();
+
+	public void clear();
+
+	public String getName();
+
+	public String getType();
+
+	public String getDestination();
+
+	public void debug(String message);
+
+	public void info(String message);
+
+	public void warn(String message);
+
+	public void error(String message);
+
+	public void fatal(String message);
 
 }

@@ -31,10 +31,10 @@ package com.blackberry.facebook.ui;
 
 import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.FacebookContext;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 import com.blackberry.util.network.CookieManager;
 
-public class PermissionScreen extends BrowserScreen implements ActionListener, RichTextLoggable {
+public class PermissionScreen extends BrowserScreen implements ActionListener {
 
 	// List of actions:
 	public static final String ACTION_SUCCESS = "success";
@@ -44,6 +44,8 @@ public class PermissionScreen extends BrowserScreen implements ActionListener, R
 	private ApplicationSettings settings;
 	private String baseUrl = null;
 
+	protected Logger log = Logger.getLogger(getClass());
+
 	/**
 	 * Create Permission Screen.
 	 * 
@@ -52,15 +54,6 @@ public class PermissionScreen extends BrowserScreen implements ActionListener, R
 	 * @param cookieManager
 	 *            cookie manager.
 	 */
-	//	public PermissionScreen(ApplicationSettings settings, CookieManager cookieManager, HttpConnectionFactory pFactory) {
-	//		super(null, cookieManager, pFactory);
-	//		this.settings = settings;
-	//
-	//		StringBuffer urlBuffer = new StringBuffer().append(settings.graphUrl).append("/oauth/authorize?").append("client_id=").append(settings.applicationId).append('&').append("redirect_uri=").append(settings.nextUrl).append('&').append("type=user_agent").append('&').append("display=wap").append('&').append("scope=");
-	//		baseUrl = urlBuffer.toString();
-	//
-	//		addActionListener(this);
-	//	}
 
 	public PermissionScreen(FacebookContext pfbc, CookieManager cookieManager) {
 		super(null, pfbc, cookieManager);

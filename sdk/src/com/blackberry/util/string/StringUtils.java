@@ -100,4 +100,18 @@ public class StringUtils {
 		}
 	}
 
+	public static String parentOf(String inStr) {
+		String result = null;
+
+		if ((inStr != null) && !inStr.trim().equals("")) {
+			inStr = inStr.trim();
+			int index = inStr.lastIndexOf('.');
+			if (index != -1) {
+				result = inStr.substring(0, index);
+			}
+		}
+
+		return result;
+	}
+
 }

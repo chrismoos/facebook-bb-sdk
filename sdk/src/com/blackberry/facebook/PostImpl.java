@@ -32,13 +32,15 @@ package com.blackberry.facebook;
 import com.blackberry.facebook.json.JSONArray;
 import com.blackberry.facebook.json.JSONException;
 import com.blackberry.facebook.json.JSONObject;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 
-public class PostImpl implements Post, RichTextLoggable {
+public class PostImpl implements Post {
 
 	private Graph graph = null;
 	private String root = "";
 	private JSONObject jsonObject = null;
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * Create a post instance.

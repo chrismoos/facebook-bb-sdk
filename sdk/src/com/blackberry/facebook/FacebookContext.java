@@ -34,11 +34,11 @@ import java.util.Hashtable;
 import com.blackberry.facebook.json.JSONArray;
 import com.blackberry.facebook.json.JSONObject;
 import com.blackberry.facebook.json.JSONTokener;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 import com.blackberry.util.network.HttpClient;
 import com.blackberry.util.network.HttpConnectionFactory;
 
-public class FacebookContext implements Facebook, RichTextLoggable {
+public class FacebookContext implements Facebook {
 
 	private ApplicationSettings settings = null;
 	private RestClient restClient = null;
@@ -46,6 +46,8 @@ public class FacebookContext implements Facebook, RichTextLoggable {
 	private User loggedInUser = null;
 	private HttpConnectionFactory factory = null;
 	private HttpClient httpClient = null;
+
+	protected Logger log = Logger.getLogger(getClass());
 
 	/**
 	 * Create an instance of FacebookContext.

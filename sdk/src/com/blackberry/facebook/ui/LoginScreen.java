@@ -31,10 +31,10 @@ package com.blackberry.facebook.ui;
 
 import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.FacebookContext;
-import com.blackberry.util.log.RichTextLoggable;
+import com.blackberry.util.log.Logger;
 import com.blackberry.util.network.CookieManager;
 
-public class LoginScreen extends BrowserScreen implements ActionListener, RichTextLoggable {
+public class LoginScreen extends BrowserScreen implements ActionListener {
 
 	public static final String ACTION_SUCCESS = "success";
 	public static final String ACTION_LOGGED_IN = "loggedIn";
@@ -42,31 +42,13 @@ public class LoginScreen extends BrowserScreen implements ActionListener, RichTe
 
 	private ApplicationSettings settings;
 
+	protected Logger log = Logger.getLogger(getClass());
+
 	public LoginScreen(FacebookContext pfbc, CookieManager cookieManager) {
 		super(new StringBuffer().append("http://m.facebook.com/tos.php?").append("api_key=").append(pfbc.getApplicationSettings().applicationKey).append('&').append("v=1.0").append('&').append("next=").append(pfbc.getApplicationSettings().nextUrl).toString(), pfbc, cookieManager);
 		settings = pfbc.getApplicationSettings();
 		addActionListener(this);
 		log.info("(LoginScreen) URL: " + getUrl());
-		testLog();
-	}
-
-	private void testLog() {
-
-		console.debug("************************** LoginScreen.console.xxx() **********************************");
-		console.debug("This is just a testing log message.");
-		console.info("This is just a testing log message.");
-		console.warn("This is just a testing log message.");
-		console.error("This is just a testing log message.");
-		console.fatal("This is just a testing log message.");
-		console.debug("************************** /LoginScreen.console.xxx() **********************************");
-
-		log.debug("************************** LoginScreen.log.xxx() **********************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("************************** /LoginScreen.log.xxx() **********************************");
 	}
 
 	public void login() {
