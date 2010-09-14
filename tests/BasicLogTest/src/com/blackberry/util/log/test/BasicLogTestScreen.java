@@ -29,228 +29,153 @@
  */
 package com.blackberry.util.log.test;
 
-import javax.microedition.content.Invocation;
-import javax.microedition.content.Registry;
-
-import com.blackberry.util.log.LogScreen;
+import com.blackberry.util.log.Level;
 import com.blackberry.util.log.Logger;
 import com.blackberry.util.log.LoggerFactory;
-import net.rim.device.api.system.EventLogger;
-import net.rim.device.api.ui.Manager;
-import net.rim.device.api.ui.UiApplication;
+
+import net.rim.device.api.ui.Font;
+import net.rim.device.api.ui.FontFamily;
 import net.rim.device.api.ui.component.ButtonField;
 import net.rim.device.api.ui.component.Dialog;
+import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.SeparatorField;
 import net.rim.device.api.ui.container.HorizontalFieldManager;
 import net.rim.device.api.ui.container.MainScreen;
-import net.rim.device.api.ui.container.VerticalFieldManager;
 
 public class BasicLogTestScreen extends MainScreen {
 
-	protected Logger c = Logger.getLogger("C");
-	protected Logger t = Logger.getLogger("T");
-	protected Logger r = Logger.getLogger("R");
-	protected Logger s = Logger.getLogger("S");
-	protected Logger e = Logger.getLogger("E");
-
-	protected Logger classLogger = Logger.getLogger(getClass());
-	protected Logger rootLogger = Logger.getLogger("jhgsjhfgdhh343234543jfhkdg76854ghyj");
+	protected Logger[] loggers = null;
 
 	public BasicLogTestScreen() {
 
 		setTitle("Basic Log Test");
 
-		VerticalFieldManager topManager = new VerticalFieldManager(Manager.VERTICAL_SCROLL);
+		loggers = Logger.getAllLogger();
 
-		HorizontalFieldManager hfm1 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm2 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm3 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm4 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm5 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm6 = new HorizontalFieldManager();
-		HorizontalFieldManager hfm7 = new HorizontalFieldManager();
+		if ((loggers != null) && (loggers.length > 0)) {
 
-		hfm1.add(new ButtonField("Log to Console") {
-			protected boolean invokeAction(int action) {
-				doLog(c);
-				Dialog.inform("Written to: " + c.getName());
-				return true;
-			}
-		});
+			for (int i = 0; i < loggers.length; i++) {
 
-		hfm2.add(new ButtonField("Log to Text File") {
-			protected boolean invokeAction(int action) {
-				doLog(t);
-				Dialog.inform("Written to: " + t.getName());
-				return true;
-			}
-		});
+				final String loggerName = loggers[i].getName();
+				String loggerLevel = null;
 
-		hfm2.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(t);
-				Dialog.inform("Cleared: " + t.getName());
-				return true;
-			}
-		});
+				if (loggers[i].getLevel() == Level.DEBUG) {
+					loggerLevel = "DEBUG";
+				} else if (loggers[i].getLevel() == Level.INFO) {
+					loggerLevel = "INFO";
+				} else if (loggers[i].getLevel() == Level.WARN) {
+					loggerLevel = "WARN";
+				} else if (loggers[i].getLevel() == Level.ERROR) {
+					loggerLevel = "ERROR";
+				} else if (loggers[i].getLevel() == Level.FATAL) {
+					loggerLevel = "FATAL";
+				}
 
-		hfm3.add(new ButtonField("Log to RichText File") {
-			protected boolean invokeAction(int action) {
-				doLog(r);
-				Dialog.inform("Written to: " + r.getName());
-				return true;
-			}
-		});
+				String lft1 = "Name: " + loggers[i].getName();
+				String lft2 = "Level: " + loggerLevel;
+				String lft3 = "Additive: " + loggers[i].getAdditive();
+				String lft4 = "Parent: " + loggers[i].getParent().getName();
 
-		hfm3.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(r);
-				Dialog.inform("Cleared: " + r.getName());
-				return true;
-			}
-		});
+				LabelField lf1 = new LabelField(lft1);
+				LabelField lf2 = new LabelField(lft2);
+				LabelField lf3 = new LabelField(lft3);
+				LabelField lf4 = new LabelField(lft4);
 
-		hfm4.add(new ButtonField("Log to Screen") {
-			protected boolean invokeAction(int action) {
-				doLog(s);
-				if (Dialog.ask("Written to: [Log Screen]" + "\n" + "Open Now?:", new String[] { "Yes", "No" }, 0) == 0) {
-					LogScreen[] screens = s.getLogScreens();
-					if ((screens != null) && (screens.length > 0)) {
-						for (int i = 0; i < screens.length; i++) {
-							UiApplication.getUiApplication().pushScreen(screens[i]);
-						}
+				try {
+					lf1.setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.BOLD, 15));
+					lf2.setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.PLAIN, 12));
+					lf3.setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.PLAIN, 12));
+					lf4.setFont(FontFamily.forName("BBAlpha Serif").getFont(Font.PLAIN, 12));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+
+				add(lf1);
+				add(lf2);
+				add(lf3);
+				add(lf4);
+
+				HorizontalFieldManager hfm = new HorizontalFieldManager();
+
+				ButtonField bLog = new ButtonField("Log") {
+					protected boolean invokeAction(int action) {
+						doLog(loggerName);
+						Dialog.inform("Logged to: " + loggerName);
+						return true;
 					}
-				}
-				return true;
+				};
+
+				ButtonField bShow = new ButtonField("Show") {
+					protected boolean invokeAction(int action) {
+						doShow(loggerName);
+						return true;
+					}
+				};
+
+				ButtonField bClear = new ButtonField("Clear") {
+					protected boolean invokeAction(int action) {
+						doClear(loggerName);
+						Dialog.inform("Cleared: " + loggerName);
+						return true;
+					}
+				};
+
+				hfm.add(bLog);
+				hfm.add(bShow);
+				hfm.add(bClear);
+
+				add(hfm);
+				add(new SeparatorField());
 			}
-		});
 
-		hfm4.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(s);
-				Dialog.inform("Cleared: [Log Screen]");
-				return true;
-			}
-		});
-
-		hfm5.add(new ButtonField("Log to EventLog") {
-			protected boolean invokeAction(int action) {
-				doLog(e);
-				if (Dialog.ask("Written to: [Event Log]" + "\n" + "Open Now?:", new String[] { "Yes", "No" }, 0) == 0) {
-					EventLogger.startEventLogViewer();
-				}
-				return true;
-			}
-		});
-
-		hfm5.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(e);
-				Dialog.inform("Cleared: [Event Log]");
-				return true;
-			}
-		});
-
-		hfm6.add(new ButtonField("Log to Class Logger") {
-			protected boolean invokeAction(int action) {
-				doLog(classLogger);
-				Dialog.inform("Written to: " + classLogger.getName());
-				return true;
-			}
-		});
-
-		hfm6.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(classLogger);
-				Dialog.inform("Cleared: " + classLogger.getName());
-				return true;
-			}
-		});
-
-		hfm7.add(new ButtonField("Log to Root Logger") {
-			protected boolean invokeAction(int action) {
-				doLog(rootLogger);
-				Dialog.inform("Written to: " + rootLogger.getName());
-				return true;
-			}
-		});
-
-		hfm7.add(new ButtonField("Clear") {
-			protected boolean invokeAction(int action) {
-				doClear(rootLogger);
-				Dialog.inform("Cleared: " + rootLogger.getName());
-				return true;
-			}
-		});
-
-		topManager.add(hfm1);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm2);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm3);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm4);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm5);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm6);
-		topManager.add(new SeparatorField());
-
-		topManager.add(hfm7);
-		topManager.add(new SeparatorField());
-
-		add(topManager);
-
-	}
-
-	protected void doLog(Logger log) {
-		log.debug("*************************************** This is a LONG line ***************************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("*************************************** This is a LONG line ***************************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("*************************************** This is a LONG line ***************************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("*************************************** This is a LONG line ***************************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-		log.debug("*************************************** This is a LONG line ***************************************");
-		log.debug("This is just a testing log message.");
-		log.info("This is just a testing log message.");
-		log.warn("This is just a testing log message.");
-		log.error("This is just a testing log message.");
-		log.fatal("This is just a testing log message.");
-	}
-
-	protected void doClear(Logger log) {
-		log.clear();
-	}
-
-	protected void openFile(String fileName) {
-		try {
-			Registry.getRegistry("net.rim.device.api.content.BlackBerryContentHandler").invoke(new Invocation(fileName));
-		} catch (Throwable t) {
-			t.printStackTrace();
+		} else {
+			// do nothing
 		}
+
+	}
+
+	protected void doLog(String loggerName) {
+		Logger log = Logger.getLogger(loggerName);
+		log.debug("*************************************** This is a LONG line ***************************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("*************************************** This is a LONG line ***************************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("*************************************** This is a LONG line ***************************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("*************************************** This is a LONG line ***************************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+		log.debug("*************************************** This is a LONG line ***************************************");
+		log.debug("This is just a testing log message.");
+		log.info("This is just a testing log message.");
+		log.warn("This is just a testing log message.");
+		log.error("This is just a testing log message.");
+		log.fatal("This is just a testing log message.");
+	}
+
+	protected void doShow(String loggerName) {
+		Logger log = Logger.getLogger(loggerName);
+		log.show();
+	}
+
+	protected void doClear(String loggerName) {
+		Logger log = Logger.getLogger(loggerName);
+		log.clear();
 	}
 
 	public boolean onClose() {
