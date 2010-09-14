@@ -42,15 +42,20 @@ public class LoggerFactory {
 	private static final String LOGGER_PREFFIX = "log4b.logger.";
 
 	private static Hashtable loggers = new Hashtable();
-	private static Logger ROOT_LOGGER = createLogger("ROOT", "DEBUG", new Appender[] { AppenderFactory.getRootAppender() });
+	private static Logger GOD_LOGGER = createLogger("GOD", "DEBUG", false, new Appender[] { AppenderFactory.getRootAppender() });
 
 	static {
 		load(DEFAULT_PROPERTIES_FILENAME);
 	}
 
 	public static void load(String propFile) {
+		AppenderFactory.load(propFile);
+		loadLoggers(propFile);
+		setParentLoggers(propFile);
+	}
+
+	public static void loadLoggers(String propFile) {
 		try {
-			AppenderFactory.load(propFile);
 			Properties prop = Properties.loadProperties("/" + propFile);
 			Enumeration enum = prop.getEnumeratedNames();
 
@@ -60,6 +65,7 @@ public class LoggerFactory {
 				String[] values = null;
 				String loggerName = null;
 				String loggerLevel = null;
+				boolean additive = false;
 
 				key = ((String) enum.nextElement());
 
@@ -69,15 +75,16 @@ public class LoggerFactory {
 					value = prop.getProperty(key);
 					if ((value != null) && !value.equals("")) {
 						values = StringUtils.split(value, ',', 0);
-						if ((values != null) && (values.length > 1)) {
+						if ((values != null) && (values.length > 2)) {
 							loggerLevel = values[0].trim();
-							Appender[] appenderList = new Appender[values.length - 1];
+							additive = values[1].trim().equalsIgnoreCase("true");
+							Appender[] appenderList = new Appender[values.length - 2];
 
-							for (int i = 1; i < values.length; i++) {
-								appenderList[i - 1] = AppenderFactory.getAppender(values[i].trim());
+							for (int i = 2; i < values.length; i++) {
+								appenderList[i - 2] = AppenderFactory.getAppender(values[i].trim());
 							}
 
-							loggers.put(loggerName, createLogger(loggerName, loggerLevel, appenderList));
+							loggers.put(loggerName, createLogger(loggerName, loggerLevel, additive, appenderList));
 						}
 					}
 				}
@@ -91,8 +98,80 @@ public class LoggerFactory {
 		}
 	}
 
+	public static void setParentLoggers(String propFile) {
+		try {
+			Properties prop = Properties.loadProperties("/" + propFile);
+			Enumeration enum = prop.getEnumeratedNames();
+
+			while (enum.hasMoreElements()) {
+				String key = null;
+				String value = null;
+				String[] values = null;
+				String childName = null;
+				String parentName = null;
+
+				key = ((String) enum.nextElement());
+
+				if ((key != null) && !key.equals("") && key.startsWith(LOGGER_PREFFIX)) {
+					key = key.trim();
+
+					childName = key.substring(LOGGER_PREFFIX.length());
+					parentName = StringUtils.parentOf(childName);
+
+					if ((parentName == null) || parentName.trim().equals("")) {
+						if (childName.equals("ROOT")) {
+							parentName = "GOD";
+						} else {
+							parentName = "ROOT";
+						}
+					}
+
+					Logger childLogger = getLogger(childName);
+					Logger parentLogger = null;
+
+					if (parentName.equals("GOD")) {
+						parentLogger = getGodLogger();
+					} else {
+						parentLogger = getLogger(parentName);
+					}
+
+					if ((childLogger != null) && (parentLogger != null)) {
+						childLogger.setParent(parentLogger);
+					}
+				}
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+	}
+
+	protected static Logger getGodLogger() {
+		return GOD_LOGGER;
+	}
+
 	public static Logger getRootLogger() {
-		return ROOT_LOGGER;
+		return getLogger("ROOT");
+	}
+
+	public static Logger[] getAllLogger() {
+
+		if ((loggers == null) || (loggers.size() <= 0)) {
+			return null;
+		}
+
+		Logger[] output = new Logger[loggers.size()];
+		Enumeration e = loggers.elements();
+		int i = 0;
+		while (e.hasMoreElements()) {
+			output[i] = (Logger) e.nextElement();
+			i++;
+		}
+
+		return output;
 	}
 
 	public static Logger getLogger(String name) {
@@ -107,7 +186,7 @@ public class LoggerFactory {
 					if (!name.equals("ROOT")) {
 						return getLogger("ROOT");
 					} else {
-						return ROOT_LOGGER;
+						return GOD_LOGGER;
 					}
 				}
 			}
@@ -126,21 +205,21 @@ public class LoggerFactory {
 		load(DEFAULT_PROPERTIES_FILENAME);
 	}
 
-	protected static Logger createLogger(String pName, String pLevel, Appender[] pAppenders) {
+	protected static Logger createLogger(String pName, String pLevel, boolean pAdditive, Appender[] pAppenders) {
 
 		Logger out = null;
 
 		if ((pName != null) && !pName.equals("") && (pLevel != null) && !pLevel.equals("") && (pAppenders != null) && (pAppenders.length > 0)) {
 			if (pLevel.trim().equalsIgnoreCase("DEBUG")) {
-				out = new Logger(pName.trim(), Level.DEBUG, pAppenders);
+				out = new Logger(pName.trim(), Level.DEBUG, pAdditive, pAppenders);
 			} else if (pLevel.trim().equalsIgnoreCase("INFO")) {
-				out = new Logger(pName.trim(), Level.INFO, pAppenders);
+				out = new Logger(pName.trim(), Level.INFO, pAdditive, pAppenders);
 			} else if (pLevel.trim().equalsIgnoreCase("WARN")) {
-				out = new Logger(pName.trim(), Level.WARN, pAppenders);
+				out = new Logger(pName.trim(), Level.WARN, pAdditive, pAppenders);
 			} else if (pLevel.trim().equalsIgnoreCase("ERROR")) {
-				out = new Logger(pName.trim(), Level.ERROR, pAppenders);
+				out = new Logger(pName.trim(), Level.ERROR, pAdditive, pAppenders);
 			} else if (pLevel.trim().equalsIgnoreCase("FATAL")) {
-				out = new Logger(pName.trim(), Level.FATAL, pAppenders);
+				out = new Logger(pName.trim(), Level.FATAL, pAdditive, pAppenders);
 			} else {
 				// do nothing
 			}

@@ -31,28 +31,26 @@ package com.blackberry.util.log;
 
 public class RichTextFileAppender extends TextFileAppender {
 
-	public RichTextFileAppender(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
+	public RichTextFileAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
 	}
 
-	public void debug(String message) {
-		writeLine("<span style=\"color:" + "#000000" + "\">" + formatDebug(message) + "</span><br>");
-	}
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
+		if (level == Level.DEBUG) {
+			super.writeLine(level, "<span style=\"color:" + "#000000" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	public void info(String message) {
-		writeLine("<span style=\"font-weight:bold; color:" + "#00FF00" + "\">" + formatInfo(message) + "</span><br>");
-	}
+		} else if (level == Level.INFO) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#00FF00" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	public void warn(String message) {
-		writeLine("<span style=\"font-weight:bold; color:" + "#F4A460" + "\">" + formatWarn(message) + "</span><br>");
-	}
+		} else if (level == Level.WARN) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#F4A460" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	public void error(String message) {
-		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + "\">" + formatError(message) + "</span><br>");
-	}
+		} else if (level == Level.ERROR) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#FF0000" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	public void fatal(String message) {
-		writeLine("<span style=\"font-weight:bold; color:" + "#FF0000" + ";" + "background-color:" + "#000000" + "\">" + formatFatal(message) + "</span><br>");
+		} else if (level == Level.FATAL) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#FF0000" + ";" + "background-color:" + "#000000" + "\">" + message + "</span><br>", fg, bg, bold);
+		}
 	}
 
 }

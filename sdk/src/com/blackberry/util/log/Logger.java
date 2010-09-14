@@ -31,10 +31,14 @@ package com.blackberry.util.log;
 
 import java.util.Vector;
 
-public class Logger extends AbstractLogger implements AppenderAttachable {
+public class Logger extends AbstractLogger {
 
-	public Logger(String pName, int pLevel, Appender[] pAppenders) {
+	protected Logger parent;
+	protected boolean additive = false;
+
+	public Logger(String pName, int pLevel, boolean pAdditive, Appender[] pAppenders) {
 		super(pName, pLevel, pAppenders);
+		additive = pAdditive;
 	}
 
 	public static Logger getLogger(String name) {
@@ -53,9 +57,20 @@ public class Logger extends AbstractLogger implements AppenderAttachable {
 		return LoggerFactory.getRootLogger();
 	}
 
+	public static Logger[] getAllLogger() {
+		return LoggerFactory.getAllLogger();
+	}
+
+	public void setParent(Logger pParent) {
+		parent = pParent;
+	}
+
 	public void debug(String message) {
 		if (Level.isGreaterOrEqual(Level.DEBUG, level)) {
 			invokeAppenders(Level.DEBUG, message);
+		}
+		if (additive && (parent != null)) {
+			parent.debug(message);
 		}
 	}
 
@@ -63,11 +78,17 @@ public class Logger extends AbstractLogger implements AppenderAttachable {
 		if (Level.isGreaterOrEqual(Level.INFO, level)) {
 			invokeAppenders(Level.INFO, message);
 		}
+		if (additive && (parent != null)) {
+			parent.info(message);
+		}
 	}
 
 	public void warn(String message) {
 		if (Level.isGreaterOrEqual(Level.WARN, level)) {
 			invokeAppenders(Level.WARN, message);
+		}
+		if (additive && (parent != null)) {
+			parent.warn(message);
 		}
 	}
 
@@ -75,18 +96,33 @@ public class Logger extends AbstractLogger implements AppenderAttachable {
 		if (Level.isGreaterOrEqual(Level.ERROR, level)) {
 			invokeAppenders(Level.ERROR, message);
 		}
+		if (additive && (parent != null)) {
+			parent.error(message);
+		}
 	}
 
 	public void fatal(String message) {
 		if (Level.isGreaterOrEqual(Level.FATAL, level)) {
 			invokeAppenders(Level.FATAL, message);
 		}
+		if (additive && (parent != null)) {
+			parent.fatal(message);
+		}
+	}
+
+	public boolean getAdditive() {
+		return additive;
+	}
+
+	public Logger getParent() {
+		return parent;
 	}
 
 	public LogScreen[] getLogScreens() {
 
 		Vector output = new Vector();
 		LogScreen[] result = null;
+		Appender[] appenders = getAppenders();
 
 		for (int i = 0; i < appenders.length; i++) {
 			if ((appenders[i].getType() != null) && appenders[i].getType().trim().equals(Appender.SCREEN)) {
@@ -104,12 +140,24 @@ public class Logger extends AbstractLogger implements AppenderAttachable {
 	}
 
 	public void clear() {
+		Appender[] appenders = getAppenders();
+
 		for (int i = 0; i < appenders.length; i++) {
 			appenders[i].clear();
 		}
 	}
 
+	public void show() {
+		Appender[] appenders = getAppenders();
+
+		for (int i = 0; i < appenders.length; i++) {
+			appenders[i].show();
+		}
+	}
+
 	protected void invokeAppenders(int pLevel, String pMessage) {
+		Appender[] appenders = getAppenders();
+
 		for (int i = 0; i < appenders.length; i++) {
 			if (pLevel == Level.DEBUG) {
 				appenders[i].debug(pMessage);

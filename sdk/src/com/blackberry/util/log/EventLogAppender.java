@@ -29,14 +29,15 @@
  */
 package com.blackberry.util.log;
 
+import net.rim.device.api.system.EventLogger;
 import net.rim.device.api.util.StringUtilities;
 
 public class EventLogAppender extends AbstractAppender {
 
 	protected long guid;
 
-	public EventLogAppender(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
+	public EventLogAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
 		guid = StringUtilities.stringHashToLong(pDestination);
 		net.rim.device.api.system.EventLogger.register(guid, pDestination, net.rim.device.api.system.EventLogger.VIEWER_STRING);
 	}
@@ -44,38 +45,35 @@ public class EventLogAppender extends AbstractAppender {
 	public void close() {
 	}
 
-	public void debug(String message) {
-		if ((message != null) && !message.equals("")) {
-			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.DEBUG_INFO);
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
+		int eventLogLevel = EventLogger.DEBUG_INFO;
+
+		if (level == Level.DEBUG) {
+			eventLogLevel = EventLogger.DEBUG_INFO;
+
+		} else if (level == Level.INFO) {
+			eventLogLevel = EventLogger.INFORMATION;
+
+		} else if (level == Level.WARN) {
+			eventLogLevel = EventLogger.WARNING;
+
+		} else if (level == Level.ERROR) {
+			eventLogLevel = EventLogger.ERROR;
+
+		} else if (level == Level.FATAL) {
+			eventLogLevel = EventLogger.SEVERE_ERROR;
 		}
+
+		EventLogger.logEvent(guid, message.getBytes(), eventLogLevel);
+
 	}
 
-	public void info(String message) {
-		if ((message != null) && !message.equals("")) {
-			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.INFORMATION);
-		}
-	}
-
-	public void warn(String message) {
-		if ((message != null) && !message.equals("")) {
-			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.WARNING);
-		}
-	}
-
-	public void error(String message) {
-		if ((message != null) && !message.equals("")) {
-			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.ERROR);
-		}
-	}
-
-	public void fatal(String message) {
-		if ((message != null) && !message.equals("")) {
-			net.rim.device.api.system.EventLogger.logEvent(guid, message.getBytes(), net.rim.device.api.system.EventLogger.SEVERE_ERROR);
-		}
+	public void show() {
+		EventLogger.startEventLogViewer();
 	}
 
 	public void clear() {
-		net.rim.device.api.system.EventLogger.clearLog();
+		EventLogger.clearLog();
 	}
 
 }

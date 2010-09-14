@@ -32,6 +32,7 @@ package com.blackberry.util.log;
 import java.util.Date;
 
 import net.rim.device.api.i18n.SimpleDateFormat;
+import net.rim.device.api.ui.Color;
 
 public abstract class AbstractAppender implements Appender {
 
@@ -40,22 +41,48 @@ public abstract class AbstractAppender implements Appender {
 	protected String name;
 	protected String type;
 	protected String destination;
+	protected int threshold;
 
-	public AbstractAppender(String pName, String pType, String pDestination) {
+	public AbstractAppender(String pName, String pType, int pThreshold, String pDestination) {
 		name = pName;
 		type = pType;
+		threshold = pThreshold;
 		destination = pDestination;
 	}
 
-	public abstract void debug(String message);
+	public void debug(String message) {
+		if (Level.isGreaterOrEqual(Level.DEBUG, threshold)) {
+			writeLine(Level.DEBUG, formatDebug(message), Color.BLACK, Color.WHITE, false);
+		}
+	}
 
-	public abstract void error(String message);
+	public void info(String message) {
+		if (Level.isGreaterOrEqual(Level.INFO, threshold)) {
+			writeLine(Level.INFO, formatInfo(message), Color.GREEN, Color.WHITE, true);
+		}
+	}
 
-	public abstract void fatal(String message);
+	public void warn(String message) {
+		if (Level.isGreaterOrEqual(Level.WARN, threshold)) {
+			writeLine(Level.WARN, formatWarn(message), Color.ORANGE, Color.WHITE, true);
+		}
+	}
 
-	public abstract void info(String message);
+	public void error(String message) {
+		if (Level.isGreaterOrEqual(Level.ERROR, threshold)) {
+			writeLine(Level.ERROR, formatError(message), Color.RED, Color.WHITE, true);
+		}
+	}
 
-	public abstract void warn(String message);
+	public void fatal(String message) {
+		if (Level.isGreaterOrEqual(Level.FATAL, threshold)) {
+			writeLine(Level.FATAL, formatFatal(message), Color.RED, Color.BLACK, true);
+		}
+	}
+
+	public abstract void writeLine(int level, String message, final int fg, final int bg, final boolean bold);
+
+	public abstract void show();
 
 	public String getName() {
 		return name;

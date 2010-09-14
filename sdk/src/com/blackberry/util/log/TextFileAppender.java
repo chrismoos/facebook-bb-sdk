@@ -31,25 +31,37 @@ package com.blackberry.util.log;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.microedition.content.Invocation;
+import javax.microedition.content.Registry;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
 public class TextFileAppender extends AbstractAppender {
 
-	protected String logFile = null;
 	protected FileConnection fc = null;
 	protected OutputStream os = null;
 
-	public TextFileAppender(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
-		logFile = pDestination;
+	public TextFileAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
 	}
 
-	protected void writeLine(String line) {
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
 		try {
-			if (fc == null) {
+			if ((fc != null) && fc.canWrite()) {
+				// do nothing, good to go.
+			} else {
 				try {
-					fc = (FileConnection) Connector.open(logFile, Connector.READ_WRITE);
+					if (fc != null) {
+						try {
+							fc.close();
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						} finally {
+							fc = null;
+						}
+					}
+					fc = (FileConnection) Connector.open(getDestination(), Connector.READ_WRITE);
 					if (!fc.exists()) {
 						fc.create();
 					}
@@ -58,8 +70,8 @@ public class TextFileAppender extends AbstractAppender {
 				}
 			}
 			os = fc.openOutputStream(fc.fileSize());
-			line = line + "\n";
-			byte[] lineArray = line.getBytes();
+			message = message + "\n";
+			byte[] lineArray = message.getBytes("UTF-8");
 			os.write(lineArray, 0, lineArray.length);
 
 		} catch (IOException ex) {
@@ -71,6 +83,8 @@ public class TextFileAppender extends AbstractAppender {
 					os.close();
 				} catch (IOException ex) {
 					ex.printStackTrace();
+				} finally {
+					os = null;
 				}
 			}
 		}
@@ -79,7 +93,7 @@ public class TextFileAppender extends AbstractAppender {
 	public void clear() {
 		if (fc == null) {
 			try {
-				fc = (FileConnection) Connector.open(logFile, Connector.READ_WRITE);
+				fc = (FileConnection) Connector.open(getDestination(), Connector.READ_WRITE);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -92,6 +106,14 @@ public class TextFileAppender extends AbstractAppender {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		}
+	}
+
+	public void show() {
+		try {
+			Registry.getRegistry("net.rim.device.api.content.BlackBerryContentHandler").invoke(new Invocation(getDestination()));
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 	}
 
@@ -114,26 +136,6 @@ public class TextFileAppender extends AbstractAppender {
 				fc = null;
 			}
 		}
-	}
-
-	public void debug(String message) {
-		writeLine(formatDebug(message));
-	}
-
-	public void info(String message) {
-		writeLine(formatInfo(message));
-	}
-
-	public void warn(String message) {
-		writeLine(formatWarn(message));
-	}
-
-	public void error(String message) {
-		writeLine(formatError(message));
-	}
-
-	public void fatal(String message) {
-		writeLine(formatFatal(message));
 	}
 
 }

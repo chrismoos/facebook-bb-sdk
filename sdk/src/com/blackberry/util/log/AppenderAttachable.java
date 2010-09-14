@@ -29,16 +29,24 @@
  */
 package com.blackberry.util.log;
 
+import java.util.Enumeration;
+
 public interface AppenderAttachable {
 
-	public void debug(String message);
+	void addAppender(Appender newAppender);
 
-	public void info(String message);
+	Enumeration getAllAppenders();
 
-	public void warn(String message);
+	Appender[] getAppenders();
 
-	public void error(String message);
+	Appender getAppender(String name);
 
-	public void fatal(String message);
+	boolean isAttached(Appender appender);
+
+	void removeAllAppenders();
+
+	void removeAppender(Appender appender);
+
+	void removeAppender(String name);
 
 }

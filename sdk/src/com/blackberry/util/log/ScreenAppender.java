@@ -29,21 +29,21 @@
  */
 package com.blackberry.util.log;
 
-import net.rim.device.api.ui.Color;
 import net.rim.device.api.ui.Font;
 import net.rim.device.api.ui.FontFamily;
 import net.rim.device.api.ui.Graphics;
+import net.rim.device.api.ui.UiApplication;
 
 public class ScreenAppender extends AbstractAppender {
 
 	protected LogScreen screen;
 
-	public ScreenAppender(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
+	public ScreenAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
 		screen = new LogScreen(pName);
 	}
 
-	protected void writeScreen(int level, String message, final int fg, final int bg, final boolean bold) {
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
 		final LogEntryField label = new LogEntryField(message, level) {
 			public void paint(Graphics g) {
 				try {
@@ -65,31 +65,15 @@ public class ScreenAppender extends AbstractAppender {
 		screen.addLog(label);
 	}
 
-	public void debug(String message) {
-		writeScreen(Level.DEBUG, formatDebug(message), Color.BLACK, Color.WHITE, false);
-	}
-
-	public void info(String message) {
-		writeScreen(Level.INFO, formatInfo(message), Color.GREEN, Color.WHITE, true);
-	}
-
-	public void warn(String message) {
-		writeScreen(Level.WARN, formatWarn(message), Color.ORANGE, Color.WHITE, true);
-	}
-
-	public void error(String message) {
-		writeScreen(Level.ERROR, formatError(message), Color.RED, Color.WHITE, true);
-	}
-
-	public void fatal(String message) {
-		writeScreen(Level.FATAL, formatFatal(message), Color.RED, Color.BLACK, true);
-	}
-
 	public void close() {
 		if (screen != null) {
 			screen.clearAll();
 		}
 		screen = null;
+	}
+
+	public void show() {
+		UiApplication.getUiApplication().pushScreen(screen);
 	}
 
 	public LogScreen getLogScreen() {

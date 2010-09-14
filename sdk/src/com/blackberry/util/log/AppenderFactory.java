@@ -44,7 +44,7 @@ public class AppenderFactory {
 	private static final String APPENDER_PREFFIX = "log4b.appender.";
 
 	private static Hashtable appenders = new Hashtable();
-	private static Appender ROOT_APPENDER = createAppender("ROOT", Appender.CONSOLE, null);
+	private static Appender ROOT_APPENDER = createAppender("ROOT", Appender.CONSOLE, "DEBUG", null);
 
 	public static void load(String propFile) {
 		try {
@@ -57,6 +57,7 @@ public class AppenderFactory {
 				String[] values = null;
 				String appenderName = null;
 				String appenderType = null;
+				String appenderThreshold = null;
 				String appenderDest = null;
 
 				key = ((String) enum.nextElement());
@@ -67,36 +68,38 @@ public class AppenderFactory {
 					value = prop.getProperty(key);
 					if ((value != null) && !value.equals("")) {
 						values = StringUtils.split(value, ',', 0);
-						if ((values != null) && (values.length > 0)) {
+						if ((values != null) && (values.length > 1)) {
 							for (int i = 0; i < values.length; i++) {
 								if (i == 0) {
 									appenderType = values[i].trim();
 								} else if (i == 1) {
+									appenderThreshold = values[i].trim();
+								} else if (i == 2) {
 									appenderDest = values[i].trim();
 								}
 							}
 
 							if (appenderType.equals(Appender.CONSOLE)) {
-								appenders.put(appenderName, createAppender(appenderName, Appender.CONSOLE, appenderDest));
+								appenders.put(appenderName, createAppender(appenderName, Appender.CONSOLE, appenderThreshold, appenderDest));
 
 							} else if (appenderType.equals(Appender.TEXT_FILE)) {
 								if ((appenderDest == null) || appenderDest.equals("")) {
 									appenderDest = DEFAULT_TEXT_LOG_FILENAME;
 								}
-								appenders.put(appenderName, createAppender(appenderName, Appender.TEXT_FILE, appenderDest));
+								appenders.put(appenderName, createAppender(appenderName, Appender.TEXT_FILE, appenderThreshold, appenderDest));
 
 							} else if (appenderType.equals(Appender.RICH_TEXT_FILE)) {
 								if ((appenderDest == null) || appenderDest.equals("")) {
 									appenderDest = DEFAULT_RICHTEXT_LOG_FILENAME;
 								}
-								appenders.put(appenderName, createAppender(appenderName, Appender.RICH_TEXT_FILE, appenderDest));
+								appenders.put(appenderName, createAppender(appenderName, Appender.RICH_TEXT_FILE, appenderThreshold, appenderDest));
 
 							} else if (appenderType.equals(Appender.SCREEN)) {
-								appenders.put(appenderName, createAppender(appenderName, Appender.SCREEN, appenderDest));
+								appenders.put(appenderName, createAppender(appenderName, Appender.SCREEN, appenderThreshold, appenderDest));
 
 							} else if (appenderType.equals(Appender.EVENT_LOG)) {
 								if ((appenderDest != null) && !appenderDest.equals("")) {
-									appenders.put(appenderName, createAppender(appenderName, Appender.EVENT_LOG, appenderDest));
+									appenders.put(appenderName, createAppender(appenderName, Appender.EVENT_LOG, appenderThreshold, appenderDest));
 								}
 							}
 						}
@@ -143,24 +146,40 @@ public class AppenderFactory {
 		load(DEFAULT_PROPERTIES_FILENAME);
 	}
 
-	private static Appender createAppender(String name, String type, String destination) {
+	private static Appender createAppender(String name, String type, String pThreshold, String destination) {
 
 		Appender out = null;
+		int threshold = Level.DEBUG;
+
+		if ((pThreshold != null) && !pThreshold.equals("")) {
+			pThreshold = pThreshold.trim();
+			if (pThreshold.equalsIgnoreCase("DEBUG")) {
+				threshold = Level.DEBUG;
+			} else if (pThreshold.equalsIgnoreCase("INFO")) {
+				threshold = Level.INFO;
+			} else if (pThreshold.equalsIgnoreCase("WARN")) {
+				threshold = Level.WARN;
+			} else if (pThreshold.equalsIgnoreCase("ERROR")) {
+				threshold = Level.ERROR;
+			} else if (pThreshold.equalsIgnoreCase("FATAL")) {
+				threshold = Level.FATAL;
+			}
+		}
 
 		if (type.trim().equalsIgnoreCase(Appender.CONSOLE)) {
-			out = new ConsoleAppender(name, type, destination);
+			out = new ConsoleAppender(name, type, threshold, destination);
 
 		} else if (type.trim().equalsIgnoreCase(Appender.TEXT_FILE)) {
-			out = new TextFileAppender(name, type, destination);
+			out = new TextFileAppender(name, type, threshold, destination);
 
 		} else if (type.trim().equalsIgnoreCase(Appender.RICH_TEXT_FILE)) {
-			out = new RichTextFileAppender(name, type, destination);
+			out = new RichTextFileAppender(name, type, threshold, destination);
 
 		} else if (type.trim().equalsIgnoreCase(Appender.SCREEN)) {
-			out = new ScreenAppender(name, type, destination);
+			out = new ScreenAppender(name, type, threshold, destination);
 
 		} else if (type.trim().equalsIgnoreCase(Appender.EVENT_LOG)) {
-			out = new EventLogAppender(name, type, destination);
+			out = new EventLogAppender(name, type, threshold, destination);
 		}
 
 		return out;

@@ -84,6 +84,12 @@ public class LogScreen extends MainScreen {
 			}
 		});
 
+		addMenuItem(new MenuItem("Clear Log", 200000, 10) {
+			public void run() {
+				clearAll();
+			}
+		});
+
 	}
 
 	public void addLog(LogEntryField field) {
@@ -111,13 +117,6 @@ public class LogScreen extends MainScreen {
 			}
 		}
 	}
-
-	//	public boolean onClose() {
-	//		clearAll();
-	//		vfm = null;
-	//		logEntries = null;
-	//		return true;
-	//	}
 
 	public void setDisplayLevel(int pLevel) {
 		displayLevel = pLevel;

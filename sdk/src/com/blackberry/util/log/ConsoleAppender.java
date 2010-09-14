@@ -31,29 +31,15 @@ package com.blackberry.util.log;
 
 public class ConsoleAppender extends AbstractAppender {
 
-	public ConsoleAppender(String pName, String pType, String pDestination) {
-		super(pName, pType, pDestination);
+	public ConsoleAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
 	}
 
-	public void debug(String message) {
-		System.out.println(formatDebug(message));
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
+		System.out.println(message);
 	}
 
-	public void info(String message) {
-		System.out.println(formatInfo(message));
-	}
-
-	public void warn(String message) {
-		System.out.println(formatWarn(message));
-	}
-
-	public void error(String message) {
-		System.out.println(formatError(message));
-
-	}
-
-	public void fatal(String message) {
-		System.out.println(formatFatal(message));
+	public void show() {
 	}
 
 	public void close() {

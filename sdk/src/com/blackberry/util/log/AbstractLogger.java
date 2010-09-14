@@ -29,16 +29,56 @@
  */
 package com.blackberry.util.log;
 
-public abstract class AbstractLogger implements AppenderAttachable {
+import java.util.Enumeration;
+import java.util.Vector;
+
+public abstract class AbstractLogger implements Loggable, AppenderAttachable {
 
 	protected String name;
 	protected int level;
-	protected Appender[] appenders;
+	protected Vector appendersVector;
 
 	public AbstractLogger(String pName, int pLevel, Appender[] pAppenders) {
+		this(pName, pLevel, arrayToVector(pAppenders));
+	}
+
+	public AbstractLogger(String pName, int pLevel, Vector pAppenders) {
 		name = pName;
 		level = pLevel;
-		appenders = pAppenders;
+		appendersVector = pAppenders;
+	}
+
+	protected static Vector arrayToVector(Object[] a) {
+		Vector v = new Vector();
+
+		if ((a != null) && (a.length > 0)) {
+			for (int i = 0; i < a.length; i++) {
+				v.addElement(a[i]);
+			}
+		}
+
+		return v;
+	}
+
+	protected Appender[] vectorToArray(Vector v) {
+		Appender[] a = null;
+
+		if ((v != null) && (v.size() > 0)) {
+			a = new Appender[v.size()];
+			v.copyInto(a);
+		}
+
+		return a;
+	}
+
+	// implements Loggable
+
+	public String getName() {
+		return name;
+	}
+
+	public int getLevel() {
+		return level;
 	}
 
 	public abstract void debug(String message);
@@ -51,16 +91,57 @@ public abstract class AbstractLogger implements AppenderAttachable {
 
 	public abstract void warn(String message);
 
-	public String getName() {
-		return name;
-	}
-
-	public int getLevel() {
-		return level;
-	}
+	// implements AppenderAttachable
 
 	public Appender[] getAppenders() {
-		return appenders;
+		return vectorToArray(appendersVector);
+	}
+
+	public void addAppender(Appender newAppender) {
+		if (appendersVector != null) {
+			appendersVector.addElement(newAppender);
+		}
+	}
+
+	public Enumeration getAllAppenders() {
+		return appendersVector.elements();
+	}
+
+	public Appender getAppender(String name) {
+		Appender a = null;
+		Enumeration e = appendersVector.elements();
+
+		while (e.hasMoreElements()) {
+			Appender b = (Appender) e.nextElement();
+			if ((b != null) && b.getName().trim().equals(name)) {
+				return b;
+			}
+		}
+
+		return a;
+	}
+
+	public boolean isAttached(Appender appender) {
+		return appendersVector.contains(appender);
+	}
+
+	public void removeAllAppenders() {
+		appendersVector.removeAllElements();
+	}
+
+	public void removeAppender(Appender appender) {
+		appendersVector.removeElement(appender);
+	}
+
+	public void removeAppender(String name) {
+		Enumeration e = appendersVector.elements();
+
+		while (e.hasMoreElements()) {
+			Appender b = (Appender) e.nextElement();
+			if ((b != null) && b.getName().trim().equals(name)) {
+				appendersVector.removeElement(b);
+			}
+		}
 	}
 
 }

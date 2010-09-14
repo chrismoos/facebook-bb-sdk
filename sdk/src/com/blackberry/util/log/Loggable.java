@@ -29,25 +29,11 @@
  */
 package com.blackberry.util.log;
 
-public interface Appender {
-
-	public static String CONSOLE = "CONSOLE";
-	public static String TEXT_FILE = "TEXT_FILE";
-	public static String RICH_TEXT_FILE = "RICH_TEXT_FILE";
-	public static String SCREEN = "SCREEN";
-	public static String EVENT_LOG = "EVENT_LOG";
-
-	public void close();
-
-	public void clear();
-
-	public void show();
+public interface Loggable {
 
 	public String getName();
 
-	public String getType();
-
-	public String getDestination();
+	public int getLevel();
 
 	public void debug(String message);
 
