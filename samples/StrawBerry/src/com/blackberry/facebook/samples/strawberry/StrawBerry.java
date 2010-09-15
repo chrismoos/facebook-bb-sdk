@@ -178,7 +178,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	}
 
 	private void exit() {
-		AppenderFactory.clear();
+		AppenderFactory.close();
 		System.exit(0);
 	}
 
