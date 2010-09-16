@@ -146,13 +146,13 @@ public class StrawBerry extends UiApplication implements ActionListener {
 		store = PersistentStore.getPersistentObject(persistentObjectId);
 		synchronized (store) {
 			if (store.getContents() == null) {
-				store.setContents(new ApplicationSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID));
+				store.setContents(new FacebookSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID));
 				store.commit();
 			}
 		}
 
 		try {
-			fbc = new FacebookContext((ApplicationSettings) store.getContents(), connFactory);
+			fbc = new FacebookContext(new ApplicationSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID), connFactory);
 
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -160,7 +160,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 		}
 	}
 
-	private void saveSettings(ApplicationSettings settings) {
+	private void saveSettings(FacebookSettings settings) {
 		synchronized (store) {
 			store.setContents(settings);
 			store.commit();
@@ -173,7 +173,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	}
 
 	public void saveAndExit() {
-		saveSettings(fbc.getApplicationSettings());
+		saveSettings(new FacebookSettings(fbc.getApplicationSettings()));
 		exit();
 	}
 
