@@ -29,9 +29,7 @@
  */
 package com.blackberry.facebook;
 
-import net.rim.device.api.util.Persistable;
-
-public class ApplicationSettings implements Persistable {
+public class ApplicationSettings {
 
 	public String restUrl = null;
 	public String graphUrl = null;

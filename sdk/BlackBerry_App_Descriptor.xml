@@ -1,5 +1,5 @@
 <Properties ModelVersion="1.1.2">
-  <General Title="" Version="" Vendor="" Description=""/>
+  <General Title="" Version="0.3.4" Vendor="" Description=""/>
   <Application Type="Library" MainMIDletName="" MainArgs="" HomeScreenPosition="0" StartupTier="7" IsSystemModule="true" IsAutostartup="false"/>
   <Resources hasTitleResource="false" TitleResourceBundleName="" TitleResourceBundleRelativePath="" TitleResourceBundleClassName="" TitleResourceBundleKey="" DescriptionId="">
     <Icons/>
@@ -7,7 +7,7 @@
   <Compile OutputCompilerMessages="false" ConvertImages="false" CreateWarningForNoExportedRoutine="true" CompressResources="false" AliasList="">
     <PreprocessorDefines/>
   </Compile>
-  <Packaging OutputFileName="FacebookBlackBerrySDK" OutputFolder="deliverables" PreBuildStep="" PostBuildStep="" CleanStep="" GenerateALXFile="true">
+  <Packaging OutputFileName="fb_bb_sdk_v0_3_4" OutputFolder="deliverables" PreBuildStep="" PostBuildStep="" CleanStep="" GenerateALXFile="true">
     <AlxFiles/>
   </Packaging>
   <HiddenProperties>
