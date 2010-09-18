@@ -29,7 +29,6 @@
  */
 package com.blackberry.facebook.samples.strawberry;
 
-import com.blackberry.facebook.ApplicationSettings;
 import com.blackberry.facebook.ExtendedPermission;
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.facebook.FacebookException;
@@ -152,7 +151,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 		}
 
 		try {
-			fbc = new FacebookContext(new ApplicationSettings(REST_URL, GRAPH_URL, NEXT_URL, APPLICATION_KEY, APPLICATION_SECRET, APPLICATION_ID), connFactory);
+			fbc = new FacebookContext(((FacebookSettings) store.getContents()).getApplicationSettings(), connFactory);
 
 		} catch (Throwable t) {
 			t.printStackTrace();

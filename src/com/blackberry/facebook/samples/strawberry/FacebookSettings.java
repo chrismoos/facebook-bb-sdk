@@ -33,6 +33,19 @@ public class FacebookSettings implements Persistable {
 		applicationKey = as.applicationKey;
 		applicationSecret = as.applicationSecret;
 		applicationId = as.applicationId;
+
+		sessionKey = as.sessionKey;
+		sessionSecret = as.sessionSecret;
+		accessToken = as.accessToken;
+	}
+
+	public ApplicationSettings getApplicationSettings() {
+		ApplicationSettings as = new ApplicationSettings(restUrl, graphUrl, nextUrl, applicationKey, applicationSecret, applicationId);
+		as.sessionKey = sessionKey;
+		as.sessionSecret = sessionSecret;
+		as.accessToken = accessToken;
+
+		return as;
 	}
 
 }

@@ -42,22 +42,6 @@ public class ApplicationSettings {
 	public String sessionSecret = null;
 	public String accessToken = null;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param restUrl
-	 *            Facebook REST server's URL.
-	 * @param graphUrl
-	 *            Facebook Graph API server's URL.
-	 * @param nextUrl
-	 *            Next URL to denote success.
-	 * @param applicationKey
-	 *            Facebook Application Key.
-	 * @param applicationSecret
-	 *            Facebook Application Secret.
-	 * @param applicationId
-	 *            Facebook Application (Client) ID.
-	 */
 	public ApplicationSettings(String restUrl, String graphUrl, String nextUrl, String applicationKey, String applicationSecret, String applicationId) {
 		this.restUrl = restUrl;
 		this.graphUrl = graphUrl;
