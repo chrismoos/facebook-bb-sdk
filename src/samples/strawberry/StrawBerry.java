@@ -48,7 +48,7 @@ public class StrawBerry extends UiApplication implements ActionListener {
 	// Constants
 	public final static String NEXT_URL = "http://www.facebook.com/connect/login_success.html";
 	public final static String APPLICATION_ID = "153555168010272";
-	private final static long persistentObjectId = 0x854d1b7fa43e3577L; // samples.strawberry.StrawBerry
+	private final static long persistentObjectId = 0x854d1b7fa43e3577L;
 
 	private PersistentObject store;
 
@@ -137,7 +137,6 @@ public class StrawBerry extends UiApplication implements ActionListener {
 		saveContext(null);
 		logoutScreen = new LogoutScreen(fbc);
 		logoutScreen.addActionListener(this);
-		logoutScreen.fetch();
 	}
 
 	public void saveAndExit() {

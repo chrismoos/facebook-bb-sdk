@@ -29,13 +29,17 @@
  */
 package com.blackberry.facebook.ui;
 
-import javax.microedition.io.InputConnection;
+import org.w3c.dom.Document;
 
 import net.rim.device.api.browser.field2.BrowserField;
-import net.rim.device.api.browser.field2.BrowserFieldNavigationRequestHandler;
-import net.rim.device.api.browser.field2.BrowserFieldRequest;
-import net.rim.device.api.browser.field2.BrowserFieldResourceRequestHandler;
-import net.rim.device.api.browser.field2.ProtocolController;
+import net.rim.device.api.browser.field2.BrowserFieldListener;
+import net.rim.device.api.system.Application;
+import net.rim.device.api.system.Bitmap;
+import net.rim.device.api.ui.Manager;
+import net.rim.device.api.ui.Ui;
+import net.rim.device.api.ui.UiEngine;
+import net.rim.device.api.ui.component.Dialog;
+
 import com.blackberry.facebook.FacebookContext;
 import com.blackberry.util.log.Logger;
 
@@ -45,7 +49,6 @@ public class LogoutScreen extends BrowserScreen implements ActionListener {
 	public static final String ACTION_LOGGED_OUT = "loggedOut";
 	public static final String ACTION_ERROR = "error";
 
-	protected MyBrowserFieldRequestHandler handler;
 	protected Logger log = Logger.getLogger(getClass());
 	protected String nextUrl;
 
@@ -54,15 +57,14 @@ public class LogoutScreen extends BrowserScreen implements ActionListener {
 		super("http://m.facebook.com/logout.php?confirm=1&next=" + pfbc.getNextUrl());
 
 		nextUrl = pfbc.getNextUrl().trim();
-		handler = new MyBrowserFieldRequestHandler(bf);
-		((ProtocolController) bf.getController()).setNavigationRequestHandler("http", handler);
-		((ProtocolController) bf.getController()).setResourceRequestHandler("http", handler);
+		bf.addListener(new MyBrowserFieldListener());
 
 		addActionListener(this);
+		browse();
 	}
 
-	public boolean checkStatusFromUrl(String url) {
-		if ((url == null) || !url.trim().equalsIgnoreCase(nextUrl.trim())) {
+	public boolean checkLogoutStatusFromUrl(String url) {
+		if ((url == null) || !url.trim().startsWith(nextUrl.trim())) {
 			return false;
 		} else {
 			fireAction(ACTION_SUCCESS, null);
@@ -73,28 +75,41 @@ public class LogoutScreen extends BrowserScreen implements ActionListener {
 	public void onAction(Action event) {
 		if (event.getSource() == this) {
 			if (event.getAction().equals(ACTION_SUCCESS)) {
-				log.debug("Logged out successfully.");
+				log.info("Logged out successfully.");
 				fireAction(ACTION_LOGGED_OUT, null);
 			}
 		}
 	}
 
-	public class MyBrowserFieldRequestHandler implements BrowserFieldNavigationRequestHandler, BrowserFieldResourceRequestHandler {
+	public class MyBrowserFieldListener extends BrowserFieldListener {
 
-		protected BrowserField _browserField;
-
-		public MyBrowserFieldRequestHandler(BrowserField browserField) {
-			_browserField = browserField;
-		}
-
-		public void handleNavigation(BrowserFieldRequest request) throws Exception {
-			if (!checkStatusFromUrl(request.getURL())) {
-				_browserField.displayContent(handleResource(request), request.getURL());
+		public void documentLoaded(final BrowserField browserField, Document document) throws Exception {
+			if (!checkLogoutStatusFromUrl(document.getDocumentURI())) {
+				log.debug("Logout status not found.");
+			} else {
+				log.debug("Logout status found !!!");
 			}
 		}
 
-		public InputConnection handleResource(BrowserFieldRequest request) throws Exception {
-			return _browserField.getConnectionManager().makeRequest(request);
+		public void documentAborted(final BrowserField browserField, Document document) throws Exception {
+		}
+
+		public void documentCreated(final BrowserField browserField, Document document) throws Exception {
+		}
+
+		public void documentError(final BrowserField browserField, Document document) throws Exception {
+		}
+
+		public void documentUnloading(final BrowserField browserField, Document document) throws Exception {
+		}
+
+		public void downloadProgress(final BrowserField browserField, Document document) throws Exception {
+		}
+
+		public void showDialog(String msg) {
+			synchronized (Application.getEventLock()) {
+				Ui.getUiEngine().pushGlobalScreen(new Dialog(Dialog.D_OK, msg, Dialog.OK, Bitmap.getPredefinedBitmap(Bitmap.EXCLAMATION), Manager.VERTICAL_SCROLL), 1, UiEngine.GLOBAL_QUEUE);
+			}
 		}
 
 	}

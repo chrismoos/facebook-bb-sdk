@@ -114,8 +114,12 @@ public class LoginScreen extends BrowserScreen implements ActionListener {
 		}
 
 		public void handleNavigation(BrowserFieldRequest request) throws Exception {
+			log.debug("BF-Navigate: " + request.getURL());
 			if (!checkAccessTokenFromUrl(request.getURL())) {
+				log.debug("Access Token not found.");
 				_browserField.displayContent(handleResource(request), request.getURL());
+			} else {
+				log.debug("Access Token found !!!");
 			}
 		}
 

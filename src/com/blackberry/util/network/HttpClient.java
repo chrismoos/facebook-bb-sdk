@@ -41,7 +41,9 @@ import com.blackberry.util.log.Logger;
 
 import net.rim.blackberry.api.browser.URLEncodedPostData;
 import net.rim.device.api.io.http.HttpProtocolConstants;
+import net.rim.device.api.io.transport.ConnectionDescriptor;
 import net.rim.device.api.io.transport.ConnectionFactory;
+import net.rim.device.api.io.transport.TransportInfo;
 
 public class HttpClient {
 
@@ -101,9 +103,11 @@ public class HttpClient {
 			if ((url == null) || url.equalsIgnoreCase("") || (factory == null)) {
 				return null;
 			}
-			conn = (HttpConnection) factory.getConnection(url).getConnection();
+			ConnectionDescriptor connd = factory.getConnection(url);
+			String transportTypeName = TransportInfo.getTransportTypeName(connd.getTransportDescriptor().getTransportType());
+			conn = (HttpConnection) connd.getConnection();
 
-			log.debug("HTTP-GET:  " + conn.getURL());
+			log.debug("HTTP-GET (" + transportTypeName + "):  " + conn.getURL());
 			int resCode = conn.getResponseCode();
 			String resMessage = conn.getResponseMessage();
 			log.debug("Response:  " + resCode + " " + resMessage);
@@ -181,7 +185,10 @@ public class HttpClient {
 			if ((url == null) || url.equalsIgnoreCase("") || (factory == null)) {
 				return null;
 			}
-			conn = (HttpConnection) factory.getConnection(url).getConnection();
+
+			ConnectionDescriptor connd = factory.getConnection(url);
+			String transportTypeName = TransportInfo.getTransportTypeName(connd.getTransportDescriptor().getTransportType());
+			conn = (HttpConnection) connd.getConnection();
 
 			if (conn != null) {
 				try {
@@ -201,7 +208,7 @@ public class HttpClient {
 					e.printStackTrace();
 				}
 
-				log.debug("HTTP-POST:  " + conn.getURL());
+				log.debug("HTTP-POST (" + transportTypeName + "):  " + conn.getURL());
 				int resCode = conn.getResponseCode();
 				String resMessage = conn.getResponseMessage();
 				log.debug("Response:  " + resCode + " " + resMessage);

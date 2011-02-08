@@ -31,12 +31,15 @@ package com.blackberry.facebook.ui;
 
 import net.rim.device.api.browser.field2.BrowserField;
 import net.rim.device.api.browser.field2.BrowserFieldConfig;
+import net.rim.device.api.io.transport.ConnectionFactory;
+import net.rim.device.api.io.transport.TransportInfo;
 import net.rim.device.api.system.Display;
 
 public class BrowserScreen extends ActionScreen {
 
 	//	int[] preferredTransportTypes = { TransportInfo.TRANSPORT_TCP_CELLULAR, TransportInfo.TRANSPORT_WAP2, TransportInfo.TRANSPORT_BIS_B };
-	//	ConnectionFactory cf;
+	int[] preferredTransportTypes = { TransportInfo.TRANSPORT_BIS_B };
+	ConnectionFactory cf;
 	BrowserFieldConfig bfc;
 	BrowserField bf;
 	String url;
@@ -45,14 +48,15 @@ public class BrowserScreen extends ActionScreen {
 		super();
 		url = pUrl;
 
-		//		cf = new ConnectionFactory();
-		//		cf.setPreferredTransportTypes(preferredTransportTypes);
+		cf = new ConnectionFactory();
+		cf.setPreferredTransportTypes(preferredTransportTypes);
 
 		bfc = new BrowserFieldConfig();
 		bfc.setProperty(BrowserFieldConfig.ALLOW_CS_XHR, Boolean.TRUE);
 		bfc.setProperty(BrowserFieldConfig.JAVASCRIPT_ENABLED, Boolean.TRUE);
 		bfc.setProperty(BrowserFieldConfig.USER_SCALABLE, Boolean.TRUE);
 		bfc.setProperty(BrowserFieldConfig.MDS_TRANSCODING_ENABLED, Boolean.FALSE);
+		bfc.setProperty(BrowserFieldConfig.NAVIGATION_MODE, BrowserFieldConfig.NAVIGATION_MODE_POINTER);
 		bfc.setProperty(BrowserFieldConfig.VIEWPORT_WIDTH, new Integer(Display.getWidth()));
 		//		bfc.setProperty(BrowserFieldConfig.CONNECTION_FACTORY, cf);
 
@@ -65,12 +69,12 @@ public class BrowserScreen extends ActionScreen {
 		fetch();
 	}
 
-	public void fetch() {
-		bf.requestContent(url);
-	}
-
 	public void show() {
 		add(bf);
+	}
+
+	public void fetch() {
+		bf.requestContent(url);
 	}
 
 	public void hide() {
