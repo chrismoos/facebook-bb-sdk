@@ -27,33 +27,36 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.facebook.ui;
 
+import java.util.Enumeration;
+import java.util.Vector;
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+import net.rim.device.api.ui.container.MainScreen;
 
-final class PokeFriendScreen extends FacebookScreen {
+public class ActionScreen extends MainScreen {
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+	protected Vector actionListeners = new Vector();
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	public void addActionListener(ActionListener actionListener) {
+		if (actionListener != null) {
+			actionListeners.addElement(actionListener);
+		}
+	}
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	protected void fireAction(String action) {
+		fireAction(action, null);
+	}
+
+	protected void fireAction(String action, Object data) {
+		Enumeration listenersEnum = actionListeners.elements();
+		while (listenersEnum.hasMoreElements()) {
+			((ActionListener) listenersEnum.nextElement()).onAction(new Action(this, action, data));
+		}
+	}
+
+	protected boolean onSavePrompt() {
+		return true;
 	}
 
 }

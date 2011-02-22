@@ -27,33 +27,56 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.facebook;
 
+public class Parameter {
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+	/**
+	 * parameter's name.
+	 */
+	private String name;
 
-final class PokeFriendScreen extends FacebookScreen {
-
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
-
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	/**
+	 * parameter's value.
+	 */
+	private String value;
 
 	/**
 	 * Default constructor.
 	 * 
 	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	public Parameter() {
+	}
+
+	/**
+	 * Create a parameter given a name and value.
+	 * 
+	 * @param name
+	 *            the name.
+	 * @param value
+	 *            the value.
+	 */
+	public Parameter(String name, String value) {
+		this.name = name;
+		this.value = value;
+	}
+
+	/**
+	 * Obtain the parameter's name.
+	 * 
+	 * @return the name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Obtain the parameter's value.
+	 * 
+	 * @return the value.
+	 */
+	public String getValue() {
+		return value;
 	}
 
 }

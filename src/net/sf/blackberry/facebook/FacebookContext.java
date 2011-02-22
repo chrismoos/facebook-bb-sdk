@@ -27,33 +27,51 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.facebook;
 
+import net.rim.device.api.util.Persistable;
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+public class FacebookContext implements Persistable {
 
-final class PokeFriendScreen extends FacebookScreen {
+	protected String nextUrl = null;
+	protected String applicationId = null;
+	protected String accessToken = null;
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+	public FacebookContext(String pNextUrl, String pApplicationId) {
+		nextUrl = pNextUrl;
+		applicationId = pApplicationId;
+	}
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	public String getNextUrl() {
+		return nextUrl;
+	}
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	public void setNextUrl(String pNextUrl) {
+		nextUrl = pNextUrl;
+	}
+
+	public String getApplicationId() {
+		return applicationId;
+	}
+
+	public void setApplicationId(String pApplicationId) {
+		applicationId = pApplicationId;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String pAccessToken) {
+		accessToken = pAccessToken;
+	}
+
+	public boolean hasValidAccessToken() {
+		if ((accessToken != null) && !accessToken.equals("")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

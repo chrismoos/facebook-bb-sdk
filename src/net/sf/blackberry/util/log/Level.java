@@ -27,33 +27,25 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.util.log;
 
+public class Level {
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+	public static final int MIN_VALUE = 0;
+	public static final int MAX_VALUE = 4;
 
-final class PokeFriendScreen extends FacebookScreen {
+	public static final int DEBUG = 0;
+	public static final int INFO = 1;
+	public static final int WARN = 2;
+	public static final int ERROR = 3;
+	public static final int FATAL = 4;
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+	public static boolean isGreaterOrEqual(int level1, int level2) {
+		return level1 >= level2;
+	}
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
-
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	public static boolean isGreater(int level1, int level2) {
+		return level1 > level2;
 	}
 
 }

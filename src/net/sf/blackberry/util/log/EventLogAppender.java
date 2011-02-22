@@ -27,33 +27,56 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.util.log;
 
+import net.rim.device.api.system.EventLogger;
+import net.rim.device.api.util.StringUtilities;
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+public class EventLogAppender extends AbstractAppender {
 
-final class PokeFriendScreen extends FacebookScreen {
+	protected long guid;
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+	public EventLogAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
+		guid = StringUtilities.stringHashToLong(pDestination);
+		EventLogger.register(guid, pDestination, EventLogger.VIEWER_STRING);
+	}
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	public void show() {
+		EventLogger.startEventLogViewer();
+	}
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	public void clear() {
+		EventLogger.clearLog();
+	}
+
+	public void reset() {
+	}
+
+	public void close() {
+	}
+
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
+		int eventLogLevel = EventLogger.DEBUG_INFO;
+
+		if (level == Level.DEBUG) {
+			eventLogLevel = EventLogger.DEBUG_INFO;
+
+		} else if (level == Level.INFO) {
+			eventLogLevel = EventLogger.INFORMATION;
+
+		} else if (level == Level.WARN) {
+			eventLogLevel = EventLogger.WARNING;
+
+		} else if (level == Level.ERROR) {
+			eventLogLevel = EventLogger.ERROR;
+
+		} else if (level == Level.FATAL) {
+			eventLogLevel = EventLogger.SEVERE_ERROR;
+		}
+
+		EventLogger.logEvent(guid, message.getBytes(), eventLogLevel);
+
 	}
 
 }

@@ -33,13 +33,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.blackberry.facebook.Facebook;
-import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.Post;
-import com.blackberry.facebook.FBUser;
-import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.util.log.Logger;
-import com.blackberry.util.network.HttpClient;
 
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.Display;
@@ -49,6 +42,13 @@ import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ListField;
 import net.rim.device.api.ui.component.ListFieldCallback;
+import net.sf.blackberry.facebook.FBUser;
+import net.sf.blackberry.facebook.Facebook;
+import net.sf.blackberry.facebook.FacebookContext;
+import net.sf.blackberry.facebook.Post;
+import net.sf.blackberry.facebook.ui.FacebookScreen;
+import net.sf.blackberry.util.log.Logger;
+import net.sf.blackberry.util.network.HttpClient;
 
 final class RecentUpdatesScreen extends FacebookScreen {
 

@@ -27,33 +27,21 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.util.log;
 
-
-import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
 
-final class PokeFriendScreen extends FacebookScreen {
+public class LogEntryField extends LabelField {
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+	protected int logLevel;
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+	public LogEntryField(String message, int pLogLevel) {
+		super(message, LabelField.USE_ALL_WIDTH | LabelField.FIELD_LEFT | LabelField.FOCUSABLE);
+		logLevel = pLogLevel;
+	}
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+	public int getLogLevel() {
+		return logLevel;
 	}
 
 }

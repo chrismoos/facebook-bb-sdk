@@ -29,12 +29,6 @@
  */
 package samples.strawberry;
 
-import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.ui.Action;
-import com.blackberry.facebook.ui.ActionListener;
-import com.blackberry.facebook.ui.LoginScreen;
-import com.blackberry.facebook.ui.LogoutScreen;
-import com.blackberry.util.log.AppenderFactory;
 
 import net.rim.device.api.applicationcontrol.ApplicationPermissions;
 import net.rim.device.api.applicationcontrol.ApplicationPermissionsManager;
@@ -42,6 +36,12 @@ import net.rim.device.api.system.PersistentObject;
 import net.rim.device.api.system.PersistentStore;
 import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.Dialog;
+import net.sf.blackberry.facebook.FacebookContext;
+import net.sf.blackberry.facebook.ui.Action;
+import net.sf.blackberry.facebook.ui.ActionListener;
+import net.sf.blackberry.facebook.ui.LoginScreen;
+import net.sf.blackberry.facebook.ui.LogoutScreen;
+import net.sf.blackberry.util.log.AppenderFactory;
 
 public class StrawBerry extends UiApplication implements ActionListener {
 

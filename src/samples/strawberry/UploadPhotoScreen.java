@@ -29,12 +29,12 @@
  */
 package samples.strawberry;
 
-import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.ui.FacebookScreen;
-import com.blackberry.util.log.Logger;
 
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
+import net.sf.blackberry.facebook.FacebookContext;
+import net.sf.blackberry.facebook.ui.FacebookScreen;
+import net.sf.blackberry.util.log.Logger;
 
 final class UploadPhotoScreen extends FacebookScreen {
 

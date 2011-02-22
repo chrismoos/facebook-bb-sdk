@@ -29,11 +29,11 @@
  */
 package samples.strawberry;
 
-import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.ui.FacebookScreen;
 
 import net.rim.device.api.ui.component.Dialog;
 import net.rim.device.api.ui.component.LabelField;
+import net.sf.blackberry.facebook.FacebookContext;
+import net.sf.blackberry.facebook.ui.FacebookScreen;
 
 final class SendMessageScreen extends FacebookScreen {
 

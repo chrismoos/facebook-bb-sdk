@@ -27,33 +27,30 @@
  * dealings in this Software without prior written authorization.
  * 
  */
-package samples.strawberry;
+package net.sf.blackberry.util.log;
 
+public class RichTextFileAppender extends TextFileAppender {
 
-import net.rim.device.api.ui.component.Dialog;
-import net.rim.device.api.ui.component.LabelField;
-import net.sf.blackberry.facebook.FacebookContext;
-import net.sf.blackberry.facebook.ui.FacebookScreen;
+	public RichTextFileAppender(String pName, String pType, int pThreshold, String pDestination) {
+		super(pName, pType, pThreshold, pDestination);
+	}
 
-final class PokeFriendScreen extends FacebookScreen {
+	public void writeLine(int level, String message, final int fg, final int bg, final boolean bold) {
+		if (level == Level.DEBUG) {
+			super.writeLine(level, "<span style=\"color:" + "#000000" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	// List of actions:
-	static final String ACTION_ENTER = "pokeFriend";
-	static final String ACTION_SUCCESS = "friendPoked";
-	static final String ACTION_ERROR = "error";
+		} else if (level == Level.INFO) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#00FF00" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	// List of labels:
-	private static final String LABEL_TITLE = "Poke Friend";
+		} else if (level == Level.WARN) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#F4A460" + "\">" + message + "</span><br>", fg, bg, bold);
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	PokeFriendScreen(FacebookContext pfbc) {
-		super(pfbc);
-		LabelField titleLabel = new LabelField(LABEL_TITLE, LabelField.ELLIPSIS | LabelField.USE_ALL_WIDTH);
-		setTitle(titleLabel);
-		Dialog.alert("Not implemented yet.");
+		} else if (level == Level.ERROR) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#FF0000" + "\">" + message + "</span><br>", fg, bg, bold);
+
+		} else if (level == Level.FATAL) {
+			super.writeLine(level, "<span style=\"font-weight:bold; color:" + "#FF0000" + ";" + "background-color:" + "#000000" + "\">" + message + "</span><br>", fg, bg, bold);
+		}
 	}
 
 }

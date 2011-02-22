@@ -29,10 +29,6 @@
  */
 package samples.strawberry;
 
-import com.blackberry.facebook.FacebookContext;
-import com.blackberry.facebook.User;
-import com.blackberry.facebook.FBUser;
-import com.blackberry.facebook.ui.FacebookScreen;
 
 import net.rim.device.api.ui.Field;
 import net.rim.device.api.ui.FieldChangeListener;
@@ -41,6 +37,10 @@ import net.rim.device.api.ui.component.EditField;
 import net.rim.device.api.ui.component.LabelField;
 import net.rim.device.api.ui.component.ObjectChoiceField;
 import net.rim.device.api.ui.component.SeparatorField;
+import net.sf.blackberry.facebook.FBUser;
+import net.sf.blackberry.facebook.FacebookContext;
+import net.sf.blackberry.facebook.User;
+import net.sf.blackberry.facebook.ui.FacebookScreen;
 
 final class PostWallScreen extends FacebookScreen {
 
