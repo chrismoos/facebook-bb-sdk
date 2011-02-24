@@ -46,6 +46,7 @@ public class LoginScreen extends BrowserScreen implements ActionListener {
 
 	public static final String ACTION_SUCCESS = "success";
 	public static final String ACTION_LOGGED_IN = "loggedIn";
+	public static final String ACTION_LOGIN_CANCELLED = "loginCancelled";
 	public static final String ACTION_ERROR = "error";
 
 	protected MyBrowserFieldRequestHandler handler;
@@ -65,8 +66,9 @@ public class LoginScreen extends BrowserScreen implements ActionListener {
 		browse();
 	}
 
-	public boolean checkAccessTokenFromUrl(String url) {
-		if ((url == null) || (url.indexOf(nextUrl) == -1)) {
+	public boolean checkAccessTokenFromUrl(final String url) {
+	    log.debug("check access token from url: " + url);
+		if ((url == null) || !url.startsWith(nextUrl)) {
 			return false;
 		}
 
@@ -91,6 +93,14 @@ public class LoginScreen extends BrowserScreen implements ActionListener {
 
 			return true;
 		}
+		else {
+		    log.debug("couldn't find access token");
+		    Application.getApplication().invokeAndWait(new Runnable() {
+		        public void run() {
+		            fireAction(ACTION_ERROR, url);
+		        }
+		    });
+		}
 
 		return false;
 	}
@@ -102,6 +112,10 @@ public class LoginScreen extends BrowserScreen implements ActionListener {
 				log.debug("access_token = " + accessToken);
 				fireAction(ACTION_LOGGED_IN, accessToken);
 				UiApplication.getUiApplication().popScreen(this);
+			}
+			else if(event.getAction().equals(ACTION_ERROR)) {
+			    fireAction(ACTION_LOGIN_CANCELLED, event.getData());
+			    UiApplication.getUiApplication().popScreen(this);
 			}
 		}
 	}
